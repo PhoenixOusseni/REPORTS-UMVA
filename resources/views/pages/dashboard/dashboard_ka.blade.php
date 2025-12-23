@@ -29,33 +29,42 @@
                                 </a>
                             </div>
                         </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="GroupeBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="GroupeBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="GroupeBackdropLabel">Ajouter un nouvel groupe</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{{ route('gestions_groupes.store') }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="groupeName" class="small">umva id</label>
+                                            <input class="form-control" type="text" id="groupeName" name="nom"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="groupeDesc" class="small">Description du groupe</label>
+                                            <textarea class="form-control" id="groupeDesc" name="description" rows="3" required></textarea>
+                                        </div>
 
+                                        <hr class="mt-5">
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="GroupeBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="GroupeBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="GroupeBackdropLabel">Ajouter un nouvel groupe</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="POST" action="#" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="groupeName" class="small">umva id</label>
-                                                <input class="form-control" type="text" id="groupeName" name="groupeName"
-                                                    required>
-                                            </div>
-                                            <div class="mx-0">
-                                                <button type="submit" class="btn btn-primary">Valider</button>
-                                                <button type="button" class="btn btn-danger"
-                                                    data-bs-dismiss="modal">Fermer</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                        <div class="mx-0">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-plus-lg"></i>&nbsp; Ajouter le groupe
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-lg"></i>&nbsp; Fermer
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -63,46 +72,22 @@
 
                     <div class="card-body">
                         <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Groupe A</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="{{ route('groupes.detail_groupes') }}" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Groupe B</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Groupe C</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Groupe D</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>Groupe E</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
+                            @forelse ($collections as $item)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ $item->nom }}</span>
+                                    <span>{{ $item->created_at }}</span>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <a href="{{ route('gestions_groupes.show', $item->id) }}"
+                                            class="text-white text-decoration-none">
+                                            <i class="bi bi-eye"></i>&nbsp; Voir
+                                        </a>
+                                    </span>
+                                </li>
+                            @empty
+                                <div class="list-group-item">
+                                    <em>Aucun rapport disponible.</em>
+                                </div>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -136,18 +121,30 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="#" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('gestions_rapports_ka.store') }}"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="rapportFile" class="small">Sélectionner le fichier
                                                 rapport</label>
-                                            <input class="form-control" type="file" id="rapportFile" accept=".txt"
-                                                required>
+                                            <input class="form-control" name="file" type="file" id="rapportFile"
+                                                accept=".txt" required>
                                         </div>
+
+                                        <div class="mb-3">
+                                            <label for="dateRapport" class="small">Date du rapport</label>
+                                            <input class="form-control" name="date_rapport" type="date"
+                                                id="dateRapport" required>
+                                        </div>
+                                        <hr class="mt-5">
+
                                         <div class="mx-0">
-                                            <button type="submit" class="btn btn-primary">Valider</button>
-                                            <button type="button" class="btn btn-danger"
-                                                data-bs-dismiss="modal">Fermer</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-upload"></i>&nbsp; Charger le rapport
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-lg"></i>&nbsp; Fermer
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -157,58 +154,28 @@
 
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush">
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
+                            @forelse ($rapportsKa as $item)
+                                <li>
+                                    <a href="#" class="text-decoration-none">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Rapport du
+                                                    {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                                <small class="text-muted">Créé le
+                                                    {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                            </div>
+                                            <span>{{ $item->user->umva_id }}</span>
+                                            <span class="badge bg-primary rounded-pill">
+                                                <i class="bi bi-download"></i>&nbsp;Télécharger
+                                            </span>
                                         </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
+                                    </a>
+                                </li>
+                            @empty
+                                <div class="list-group-item">
+                                    <em>Aucun rapport disponible.</em>
+                                </div>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
