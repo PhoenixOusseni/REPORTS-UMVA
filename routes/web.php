@@ -16,4 +16,6 @@ Route::middleware('auth')->group(function () {
     Route::get('dashboard_fp', [PageController::class, 'dashboard_fp'])->name('dashboard_fp');
 
     Route::get('groupes/details_groupes', [PageController::class, 'detail_groupes'])->name('groupes.detail_groupes');
+    Route::get('kas/details_kas', [PageController::class, 'detail_kas'])->name('ka.detail_kas');
+    Route::get('mas/details_mas', [PageController::class, 'detail_mas'])->name('ma.detail_mas');
 });

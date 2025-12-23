@@ -35,4 +35,12 @@ class PageController extends Controller
     {
         return view('pages.groupes.details_groupes');
     }
+    public function detail_kas()
+    {
+        return view('pages.kas.details_kas');
+    }
+    public function detail_mas()
+    {
+        return view('pages.mas.details_mas');
+    }
 }
