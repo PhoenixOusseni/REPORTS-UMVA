@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\RapportMa;
+use Illuminate\Support\Facades\Auth;
 
 class RapportMasController extends Controller
 {
@@ -27,7 +29,19 @@ class RapportMasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // store rapport groupe
+        $rapport_ma = new RapportMa();
+        $rapport_ma->user_id = Auth::id();
+        $rapport_ma->date_rapport = $request->input('date_rapport');
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('reports/rapportma', 'public');
+            $rapport_ma->file = $path;
+        }
+
+        $rapport_ma->save();
+        return redirect()->back()
+            ->with('success', 'Rapport du ' . $rapport_ma->date_rapport . ' créé avec succès.');
     }
 
     /**

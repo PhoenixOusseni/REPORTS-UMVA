@@ -30,18 +30,16 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // store user all type
-        $users = new User();
-        $users->umva_id = $request->input('umva_id') ?? null;
-        $users->nom = $request->input('nom') ?? null;
-        $users->prenom = $request->input('prenom') ?? null;
-        $users->role_id = $request->input('role_id') ?? null;
-        $users->supervisor_id = $request->input('supervisor_id') ?? null;
-        $users->password = Hash::make($request->input('password')) ?? null;
+        User::create([
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'umva_id' => $request->umva_id,
+            'password' => Hash::make($request->password),
+            'role_id' => $request->role_id,
+            'supervisor_id' => $request->supervisor_id,
+        ]);
 
-        $users->save();
-
-        return redirect()->back()->with('success', 'Utilisateur ' . $users->umva_id . ' créé avec succès.');
+        return redirect()->back()->with('success', 'Utilisateur créé avec succès.');
     }
 
     /**

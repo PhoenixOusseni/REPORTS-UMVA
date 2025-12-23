@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Groupe;
 use App\Models\RapportKa;
 use App\Models\User;
+use App\Models\RapportMa;
 use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
@@ -34,8 +35,10 @@ class PageController extends Controller
     {
         $totalKas = User::where('role_id', 2)->where('supervisor_id', Auth::id())->count();
         $kas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $totalRapportsMa = RapportMa::where('user_id', Auth::id())->count();
+        $rapportsMa = RapportMa::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
 
-        return view('pages.dashboard.dashboard_ma', compact('totalKas', 'kas'));
+        return view('pages.dashboard.dashboard_ma', compact('totalKas', 'kas', 'totalRapportsMa', 'rapportsMa'));
     }
 
     public function dashboard_fp()

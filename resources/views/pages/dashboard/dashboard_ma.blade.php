@@ -42,7 +42,8 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="{{ route('gestions_utilisateurs.store') }}" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('gestions_utilisateurs.store') }}"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="umva_id" class="small">umva id</label>
@@ -58,6 +59,12 @@
                                             <label for="prenom" class="small">Prénom</label>
                                             <input class="form-control" type="text" id="prenom" name="prenom"
                                                 required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="prenom" class="small">Mot de passe</label>
+                                            <input class="form-control" type="password" id="password" name="password"
+                                                value="123123">
                                         </div>
 
                                         <input type="text" name="supervisor_id" value="{{ Auth::id() }}" hidden>
@@ -85,7 +92,8 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{{ $item->umva_id }}</span>
                                     <span class="badge bg-primary rounded-pill">
-                                        <a href="{{ route('gestions_utilisateurs.show', $item->id) }}" class="text-white text-decoration-none">
+                                        <a href="{{ route('gestions_utilisateurs.show', $item->id) }}"
+                                            class="text-white text-decoration-none">
                                             <i class="bi bi-eye"></i>&nbsp;Voir
                                         </a>
                                     </span>
@@ -128,13 +136,14 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="#" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('gestions_rapports_ma.store') }}"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="rapportFile" class="small">Sélectionner le fichier
                                                 rapport</label>
-                                            <input class="form-control" type="file" id="rapportFile" accept=".txt"
-                                                required>
+                                            <input class="form-control" name="file" type="file" id="rapportFile"
+                                                accept=".txt" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="dateRapport" class="small">Date du rapport</label>
@@ -158,58 +167,23 @@
 
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush">
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
+                            @forelse ($rapportsMa as $item)
+                                <li>
+                                    <a href="#" class="text-decoration-none">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Rapport du {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                                <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill">
+                                                <i class="bi bi-download"></i>&nbsp;Télécharger
+                                            </span>
                                         </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="list-group-item">Aucun rapport disponible.</li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
