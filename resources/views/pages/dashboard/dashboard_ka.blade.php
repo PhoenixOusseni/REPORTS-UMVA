@@ -51,7 +51,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="groupeDesc" class="small">Description du groupe</label>
-                                            <textarea class="form-control" id="groupeDesc" name="description" rows="3" required></textarea>
+                                            <textarea class="form-control" id="groupeDesc" name="description" rows="3"></textarea>
                                         </div>
 
                                         <hr class="mt-5">
