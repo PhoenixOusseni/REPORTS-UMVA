@@ -16,17 +16,14 @@ return new class extends Migration
             $table->string('umva_id')->unique();
             $table->string('nom');
             $table->string('prenom');
-            $table->string('email')->unique();
             $table->string('password');
             $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade')->onUpdate('cascade');
-            $table->timestamp('email_verified_at')->nullable();
 
             $table->rememberToken();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

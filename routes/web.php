@@ -6,6 +6,7 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\GroupeController;
 use App\Http\Controllers\RapportGroupeController;
 use App\Http\Controllers\RapportKasController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', [PageController::class, 'auth'])->name('login');
 Route::post('connexion', [AuthController::class, 'login_admin'])->name('login_admin');
@@ -31,5 +32,8 @@ Route::middleware('auth')->group(function () {
 
     // Gestion des rapports KA
     Route::resource('rapports/gestions_rapports_ka', RapportKasController::class);
+
+    // Gestion des utilisateurs
+    Route::resource('users/gestions_utilisateurs', UserController::class);
 });
 
