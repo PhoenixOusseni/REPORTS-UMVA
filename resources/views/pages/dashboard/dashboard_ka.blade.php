@@ -165,9 +165,11 @@
                                                     {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                             </div>
                                             <span>{{ $item->user->umva_id }}</span>
+                                            <a href="{{ route('gestions_rapports_ka.download', $item->id) }}" class="text-decoration-none">
                                             <span class="badge bg-primary rounded-pill">
-                                                <i class="bi bi-download"></i>&nbsp;Télécharger
+                                                <i class="bi bi-download"></i>&nbsp; Télécharger
                                             </span>
+                                        </a>
                                         </div>
                                     </a>
                                 </li>

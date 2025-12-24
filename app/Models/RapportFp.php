@@ -10,7 +10,7 @@ class RapportFp extends Model
 
     protected $fillable = [
         'user_id', // FP qui crée le rapport
-        'contenu',
+        'file',
         'date_rapport',
     ];
 

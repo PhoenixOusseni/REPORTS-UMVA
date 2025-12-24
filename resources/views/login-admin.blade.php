@@ -18,6 +18,7 @@
                 <img src="{{ asset('images/auxfin.png') }}" alt="logo auxfin"
                     style="width: 50%; margin-left: auto; margin-right: auto;">
             </div>
+
             <!-- Language Selection -->
             <div class="input-group mb-3 mt-5">
                 <span class="input-group-text"><i class="bi bi-translate"></i></span>
@@ -30,26 +31,35 @@
             <!-- Username -->
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                <input type="text" class="form-control" name="umva_id" placeholder="umva id">
+                <input type="text" class="form-control @error('umva_id') is-invalid @enderror" name="umva_id" placeholder="umva id" value="{{ old('umva_id') }}">
+                @error('umva_id')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
             <!-- Password -->
             <div class="input-group mb-3">
                 <span class="input-group-text"><i class="bi bi-key"></i></span>
-                <input type="password" class="form-control" name="password" id="passwordInput"
+                <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="passwordInput"
                     placeholder="Mot de passe">
                 <span class="input-group-text" style="cursor:pointer;" onclick="togglePassword()">
                     <i class="bi bi-eye" id="eyeIcon"></i>
                 </span>
+                @error('password')
+                    <div class="invalid-feedback d-block" style="width: 100%;">{{ $message }}</div>
+                @enderror
             </div>
             <!-- Role -->
             <div class="input-group mb-4">
                 <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
-                <select class="form-select" name="role_id" >
+                <select class="form-select @error('role_id') is-invalid @enderror" name="role_id">
                     <option value="" disabled selected>Choisir un rôle</option>
                     @foreach (App\Models\Role::all() as $role)
-                        <option value="{{ $role->id }}">{{ $role->libelle }}</option>
+                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->libelle }}</option>
                     @endforeach
                 </select>
+                @error('role_id')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
             </div>
             <button type="submit" class="login-button">
                 →

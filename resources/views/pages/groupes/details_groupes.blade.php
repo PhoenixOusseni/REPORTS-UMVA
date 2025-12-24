@@ -88,9 +88,11 @@
                                                 <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                             </div>
                                             <span>{{ $item->groupe->nom }}</span>
-                                            <span class="badge bg-primary rounded-pill">
-                                                <i class="bi bi-download"></i>&nbsp;Télécharger
-                                            </span>
+                                            <div>
+                                                <a href="{{ route('gestions_rapports_groupes.download', $item->id) }}" class="btn btn-primary btn-sm">
+                                                    <i class="bi bi-download"></i> Télécharger
+                                                </a>
+                                            </div>
                                         </div>
                                     </a>
                                 </li>

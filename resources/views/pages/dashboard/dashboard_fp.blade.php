@@ -172,12 +172,17 @@
                                     <a href="#" class="text-decoration-none">
                                         <div class="list-group-item d-flex justify-content-between align-items-center">
                                             <div>
-                                                <strong>Rapport du {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
-                                                <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                                <strong>Rapport du
+                                                    {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                                <small class="text-muted">Créé le
+                                                    {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                             </div>
-                                            <span class="badge bg-primary rounded-pill">
-                                                <i class="bi bi-download"></i>&nbsp;Télécharger
-                                            </span>
+                                            <a href="{{ route('gestions_rapports_fp.download', $item->id) }}"
+                                                class="text-decoration-none">
+                                                <span class="badge bg-primary rounded-pill">
+                                                    <i class="bi bi-download"></i>&nbsp; Télécharger
+                                                </span>
+                                            </a>
                                         </div>
                                     </a>
                                 </li>

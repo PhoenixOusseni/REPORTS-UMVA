@@ -77,7 +77,32 @@
 
     <!-- Contenu principal -->
     <div class="content mx-5 mx-sm-5 mx-md-5 mx-lg-5 mx-xl-5 mx-xxl-5">
+        @if (session('success') || session('error'))
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
+                <div class="toast align-items-center text-white {{ session('success') ? 'bg-success' : 'bg-danger' }} border-0"
+                    role="alert" aria-live="assertive" aria-atomic="true" id="statusToast" data-bs-delay="5000">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @if (session('success'))
+                                <div class="text-center">
+                                    <h3 class="mb-2 text-white">Succès !</h3>
+                                    <h5 class="mt-3 text-white">{{ session('success') }}</h5>
+                                </div>
+                            @else
+                                <div class="text-center">
+                                    <h3 class="mb-2 text-white">Erreur !</h3>
+                                    <h5 class="mt-3 text-white">{{ session('error') }}</h5>
+                                </div>
+                            @endif
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         @yield('content')
+
     </div>
 
     <!-- FOOTER -->
@@ -89,6 +114,20 @@
 
     <!-- Bootstrap JS -->
     @include('partials.script')
+
+    <script>
+        // Initialiser et afficher le toast automatiquement
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastElement = document.getElementById('statusToast');
+            if (toastElement) {
+                const toast = new bootstrap.Toast(toastElement, {
+                    autohide: true,
+                    delay: 5000
+                });
+                toast.show();
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -11,7 +11,7 @@ class RapportGroupe extends Model
     protected $fillable = [
         'groupe_id',
         'user_id', // KA qui crée le rapport
-        'contenu',
+        'file',
         'date_rapport',
     ];
 

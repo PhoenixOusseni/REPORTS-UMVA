@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\RapportKa;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
 use Illuminate\Support\Facades\Auth;
 
 class RapportKasController extends Controller
@@ -34,8 +37,11 @@ class RapportKasController extends Controller
         $rapport_ka->user_id = Auth::id();
         $rapport_ka->date_rapport = $request->input('date_rapport');
 
+        // Stocker le fichier
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('reports/rapportka', 'public');
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('reports/rapportka', $filename, 'public');
             $rapport_ka->file = $path;
         }
 
@@ -75,5 +81,26 @@ class RapportKasController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Download the rapport file.
+     */
+    public function download(string $id)
+    {
+        $rapport = RapportKa::findOrFail($id);
+
+        // Vérifier que l'utilisateur peut télécharger ce fichier
+        // if (Auth::id() != $rapport->user_id) {
+        //     abort(403, 'Non autorisé');
+        // }
+
+        // Vérifier que le fichier existe
+        if (!Storage::disk('public')->exists($rapport->file)) {
+            abort(404, 'Fichier non trouvé');
+        }
+
+        // Télécharger le fichier
+        return Storage::disk('public')->download($rapport->file);
     }
 }

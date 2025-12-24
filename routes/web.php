@@ -13,6 +13,13 @@ Route::get('/', [PageController::class, 'auth'])->name('login');
 Route::post('connexion', [AuthController::class, 'login_admin'])->name('login_admin');
 Route::post('deconnexion', [AuthController::class, 'logout'])->name('logout');
 
+// For storage link
+Route::get('/link', function () {
+    $targetFolder = storage_path('app/public');
+    $linkFolder = $_SERVER['DOCUMENT_ROOT'] . '/storage';
+    symlink($targetFolder, $linkFolder);
+});
+
 // Routes protégées
 Route::middleware('auth')->group(function () {
     Route::get('admin_dashboard', [PageController::class, 'dashboard'])->name('dashboard');
@@ -30,23 +37,22 @@ Route::middleware('auth')->group(function () {
 
     // Gestion des rapports des groupes
     Route::resource('rapports/gestions_rapports_groupes', RapportGroupeController::class);
+    Route::get('rapports/gestions_rapports_groupes/{id}/download', [App\Http\Controllers\RapportGroupeController::class, 'download'])->name('gestions_rapports_groupes.download');
 
     // Gestion des rapports KA
     Route::resource('rapports/gestions_rapports_ka', RapportKasController::class);
+    Route::get('rapports/gestions_rapports_ka/{id}/download', [App\Http\Controllers\RapportKasController::class, 'download'])->name('gestions_rapports_ka.download');
 
     // Gestion des rapports MA
     Route::resource('rapports/gestions_rapports_ma', App\Http\Controllers\RapportMasController::class);
+    Route::get('rapports/gestions_rapports_ma/{id}/download', [App\Http\Controllers\RapportMasController::class, 'download'])->name('gestions_rapports_ma.download');
+
     Route::resource('rapports/gestions_rapports_fp', App\Http\Controllers\RapportFpsController::class);
+    Route::get('rapports/gestions_rapports_fp/{id}/download', [App\Http\Controllers\RapportFpsController::class, 'download'])->name('gestions_rapports_fp.download');
 
-    Route::get(
-        'users/gestions_utilisateurs/{id}/ma-rapports',
-        [UserController::class, 'showMa']
-    )->name('gestions_utilisateurs.show_ma');
+    Route::get('users/gestions_utilisateurs/{id}/ma-rapports', [UserController::class, 'showMa'])->name('gestions_utilisateurs.show_ma');
 
-    Route::get(
-        'users/gestions_utilisateurs/{id}/ka-rapports',
-        [UserController::class, 'showKa']
-    )->name('gestions_utilisateurs.show_ka');
+    Route::get('users/gestions_utilisateurs/{id}/ka-rapports', [UserController::class, 'showKa'])->name('gestions_utilisateurs.show_ka');
 
     Route::get('users/gestions_utilisateurs/{id}/fp-rapports', [UserController::class, 'showFp'])->name('gestions_utilisateurs.show_fp');
 

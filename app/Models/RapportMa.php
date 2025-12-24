@@ -10,7 +10,7 @@ class RapportMa extends Model
 
     protected $fillable = [
         'user_id', // MA qui crée le rapport
-        'contenu',
+        'file',
         'date_rapport',
     ];
 

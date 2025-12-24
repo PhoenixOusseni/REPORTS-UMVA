@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RapportFp;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class RapportFpsController extends Controller
 {
@@ -29,19 +31,24 @@ class RapportFpsController extends Controller
      */
     public function store(Request $request)
     {
-        // store rapport groupe
+        // Créer le rapport
         $rapport_fp = new RapportFp();
         $rapport_fp->user_id = Auth::id();
         $rapport_fp->date_rapport = $request->input('date_rapport');
 
+        // Stocker le fichier
         if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('reports/rapportfp', 'public');
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('reports/rapportfp', $filename, 'public');
             $rapport_fp->file = $path;
         }
 
         $rapport_fp->save();
-        return redirect()->back()
-            ->with('success', 'Rapport du ' . $rapport_fp->date_rapport . ' créé avec succès.');
+
+        return redirect()
+            ->back()
+            ->with('success', 'Rapport du ' . Carbon::parse($rapport_fp->date_rapport)->format('d F Y') . ' créé avec succès.');
     }
 
     /**
@@ -74,5 +81,26 @@ class RapportFpsController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Download the rapport file.
+     */
+    public function download(string $id)
+    {
+        $rapport = RapportFp::findOrFail($id);
+
+        // Vérifier que l'utilisateur peut télécharger ce fichier
+        // if (Auth::id() != $rapport->user_id) {
+        //     abort(403, 'Non autorisé');
+        // }
+
+        // Vérifier que le fichier existe
+        if (!Storage::disk('public')->exists($rapport->file)) {
+            abort(404, 'Fichier non trouvé');
+        }
+
+        // Télécharger le fichier
+        return Storage::disk('public')->download($rapport->file);
     }
 }

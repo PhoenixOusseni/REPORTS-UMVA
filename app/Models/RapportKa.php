@@ -10,7 +10,7 @@ class RapportKa extends Model
 
     protected $fillable = [
         'user_id', // KA qui crée le rapport
-        'contenu',
+        'file',
         'date_rapport',
     ];
 
