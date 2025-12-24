@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\RapportMa;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
-class RapportMasController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,19 +30,16 @@ class RapportMasController extends Controller
      */
     public function store(Request $request)
     {
-        // store rapport groupe
-        $rapport_ma = new RapportMa();
-        $rapport_ma->user_id = Auth::id();
-        $rapport_ma->date_rapport = $request->input('date_rapport');
+        User::create([
+            'nom' => $request->nom,
+            'prenom' => $request->prenom,
+            'umva_id' => $request->umva_id,
+            'password' => Hash::make($request->password),
+            'role_id' => $request->role_id,
+            'supervisor_id' => $request->supervisor_id,
+        ]);
 
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('reports/rapportma', 'public');
-            $rapport_ma->file = $path;
-        }
-
-        $rapport_ma->save();
-        return redirect()->back()
-            ->with('success', 'Rapport du ' . $rapport_ma->date_rapport . ' créé avec succès.');
+        return redirect()->back()->with('success', 'Utilisateur créé avec succès.');
     }
 
     /**
@@ -49,7 +47,10 @@ class RapportMasController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $findUser = User::findOrFail($id);
+        $rapports = $findUser->rapportsKa()->orderBy('date_rapport', 'desc')->get();
+
+        return view('pages.mas.details_mas', compact('findUser', 'rapports'));
     }
 
     /**

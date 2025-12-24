@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-    
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -9,7 +8,7 @@
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard_ma') }}">Accueil</a></li>
-                         <li class="breadcrumb-item">Tableau de bord<datagrid></datagrid></li>
+                        <li class="breadcrumb-item">Tableau de bord MA</li>
                     </ol>
                 </nav>
             </div>
@@ -30,7 +29,7 @@
                                 </a>
                             </div>
                         </div>
-
+                    </div>
 
                         <!-- Modal -->
                         <div class="modal fade" id="GroupeBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -46,18 +45,18 @@
                                         <form method="POST" action="#" enctype="multipart/form-data">
                                             @csrf
                                             <div class="mb-3">
-                                               <label for="maName" class="small">umva id</label>
-                                                <input class="form-control" type="text" id="maName" name="maName"
+                                                <label for="kaName" class="small">umva id</label>
+                                                <input class="form-control" type="text" id="kaName" name="kaName"
                                                     required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="maName" class="small">nom</label>
-                                                <input class="form-control" type="text" id="maName" name="maName"
+                                                <label for="kaName" class="small">nom</label>
+                                                <input class="form-control" type="text" id="kaName" name="kaName"
                                                     required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="maLastName" class="small">prenom</label>
-                                                <input class="form-control" type="text" id="maLastName" name="maLastName"
+                                                <label for="kaLastName" class="small">prenom</label>
+                                                <input class="form-control" type="text" id="kaLastName" name="kaLastName"
                                                     required>
                                             </div>
                                             <div class="mx-0">
@@ -74,46 +73,21 @@
 
                     <div class="card-body">
                         <ul class="list-group list-group-flush mb-3">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>ka.kaya</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="{{ route('ka.detail_kas') }}" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>ka.korsimoro</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>ka.pensa</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>ka.pissila</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>ka.boussouma</span>
-                                <span class="badge bg-primary rounded-pill">
-                                    <a href="#" class="text-white text-decoration-none">
-                                        <i class="bi bi-eye"></i>&nbsp;Voir
-                                    </a>
-                                </span>
-                            </li>
+                            @forelse ($kas as $item)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <span>{{ $item->umva_id }}</span>
+                                    <span class="badge bg-primary rounded-pill">
+                                        <a href="{{ route('gestions_utilisateurs.show', $item->id) }}"
+                                            class="text-white text-decoration-none">
+                                            <i class="bi bi-eye"></i>&nbsp;Voir
+                                        </a>
+                                    </span>
+                                </li>
+                            @empty
+                                <li class="list-group-item">
+                                    <em>Aucun KA supervisé pour le moment.</em>
+                                </li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
@@ -147,18 +121,28 @@
                                         aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="POST" action="#" enctype="multipart/form-data">
+                                    <form method="POST" action="{{ route('gestions_rapports_ma.store') }}"
+                                        enctype="multipart/form-data">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="rapportFile" class="small">Sélectionner le fichier
                                                 rapport</label>
-                                            <input class="form-control" type="file" id="rapportFile" accept=".txt"
-                                                required>
+                                            <input class="form-control" name="file" type="file" id="rapportFile"
+                                                accept=".txt" required>
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="dateRapport" class="small">Date du rapport</label>
+                                            <input class="form-control" type="date" id="dateRapport"
+                                                name="date_rapport" required>
+                                        </div>
+                                        <hr class="mt-4">
                                         <div class="mx-0">
-                                            <button type="submit" class="btn btn-primary">Valider</button>
-                                            <button type="button" class="btn btn-danger"
-                                                data-bs-dismiss="modal">Fermer</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-lg"></i>&nbsp; Valider
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-lg"></i>&nbsp; Fermer
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -168,58 +152,23 @@
 
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush">
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
+                            @forelse ($rapportsMa as $item)
+                                <li>
+                                    <a href="#" class="text-decoration-none">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Rapport du {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                                <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                            </div>
+                                            <span class="badge bg-primary rounded-pill">
+                                                <i class="bi bi-download"></i>&nbsp;Télécharger
+                                            </span>
                                         </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="text-decoration-none">
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du 01 Janvier 2024</strong><br>
-                                            <small class="text-muted">Créé le 01 Janvier 2024</small>
-                                        </div>
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp;Télécharger
-                                        </span>
-                                    </div>
-                                </a>
-                            </li>
+                                    </a>
+                                </li>
+                            @empty
+                                <li class="list-group-item">Aucun rapport disponible.</li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>

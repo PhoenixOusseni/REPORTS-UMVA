@@ -17,8 +17,13 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $guarded = [
-
+    protected $fillable = [
+        'umva_id',
+        'nom',
+        'prenom',
+        'password',
+        'role_id',
+        'supervisor_id',
     ];
 
     /**
@@ -93,7 +98,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 }
