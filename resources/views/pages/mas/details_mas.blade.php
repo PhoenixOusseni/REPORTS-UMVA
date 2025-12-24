@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2>Détails du KA</h2>
+                <h2>Détails du MA</h2>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard_fp') }}">Accueil</a></li>
@@ -12,7 +12,7 @@
                     </ol>
                 </nav>
             </div>
-            <a href="{{ route('dashboard_ma') }}" class="btn btn-secondary">
+            <a href="{{ route('dashboard_fp') }}" class="btn btn-secondary">
                 <i class="bi bi-arrow-left"></i> Retour
             </a>
         </div>

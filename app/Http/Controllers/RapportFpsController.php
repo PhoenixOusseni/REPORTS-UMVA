@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\RapportFp;
+use Illuminate\Support\Facades\Auth;
 
 class RapportFpsController extends Controller
 {
@@ -27,7 +29,19 @@ class RapportFpsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // store rapport groupe
+        $rapport_fp = new RapportFp();
+        $rapport_fp->user_id = Auth::id();
+        $rapport_fp->date_rapport = $request->input('date_rapport');
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('reports/rapportfp', 'public');
+            $rapport_fp->file = $path;
+        }
+
+        $rapport_fp->save();
+        return redirect()->back()
+            ->with('success', 'Rapport du ' . $rapport_fp->date_rapport . ' créé avec succès.');
     }
 
     /**

@@ -31,41 +31,56 @@
                         </div>
                     </div>
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="GroupeBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="GroupeBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="GroupeBackdropLabel">Ajouter un nouveau KA</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <form method="POST" action="#" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="mb-3">
-                                                <label for="kaName" class="small">umva id</label>
-                                                <input class="form-control" type="text" id="kaName" name="kaName"
-                                                    required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kaName" class="small">nom</label>
-                                                <input class="form-control" type="text" id="kaName" name="kaName"
-                                                    required>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="kaLastName" class="small">prenom</label>
-                                                <input class="form-control" type="text" id="kaLastName" name="kaLastName"
-                                                    required>
-                                            </div>
-                                            <div class="mx-0">
-                                                <button type="submit" class="btn btn-primary">Valider</button>
-                                                <button type="button" class="btn btn-danger"
-                                                    data-bs-dismiss="modal">Fermer</button>
-                                            </div>
-                                        </form>
-                                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="GroupeBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="GroupeBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="GroupeBackdropLabel">Ajouter un nouveau KA</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{{ route('gestions_utilisateurs.store') }}"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="umva_id" class="small">umva id</label>
+                                            <input class="form-control" type="text" id="umva_id" name="umva_id"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="nom" class="small">Nom</label>
+                                            <input class="form-control" type="text" id="nom" name="nom"
+                                                required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="prenom" class="small">Prénom</label>
+                                            <input class="form-control" type="text" id="prenom" name="prenom"
+                                                required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="prenom" class="small">Mot de passe</label>
+                                            <input class="form-control" type="password" id="password" name="password"
+                                                value="123123">
+                                        </div>
+
+                                        <input type="text" name="supervisor_id" value="{{ Auth::id() }}" hidden>
+                                        <input type="text" name="role_id" value="2" hidden>
+
+                                        <hr class="mt-4">
+
+                                        <div class="mx-0">
+                                            <button type="submit" class="btn btn-primary">
+                                                <i class="bi bi-check-lg"></i>&nbsp; Valider
+                                            </button>
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-lg"></i>&nbsp; Fermer
+                                            </button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +92,7 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{{ $item->umva_id }}</span>
                                     <span class="badge bg-primary rounded-pill">
-                                        <a href="{{ route('gestions_utilisateurs.show', $item->id) }}"
+                                        <a href="{{ route('gestions_utilisateurs.show_ka', $item->id) }}"
                                             class="text-white text-decoration-none">
                                             <i class="bi bi-eye"></i>&nbsp;Voir
                                         </a>

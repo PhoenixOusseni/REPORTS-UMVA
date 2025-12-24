@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Groupe;
+use App\Models\RapportFp;
 use App\Models\RapportKa;
 use App\Models\User;
 use App\Models\RapportMa;
@@ -43,7 +44,12 @@ class PageController extends Controller
 
     public function dashboard_fp()
     {
-        return view('pages.dashboard.dashboard_fp');
+        $totalMas = User::where('role_id', 2)->where('supervisor_id', Auth::id())->count();
+        $mas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $totalRapportsFp = RapportFp::where('user_id', Auth::id())->count();
+        $rapportsFp = RapportFp::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+
+        return view('pages.dashboard.dashboard_fp', compact('totalMas', 'mas', 'totalRapportsFp', 'rapportsFp'));
     }
 
     public function detail_groupes()
