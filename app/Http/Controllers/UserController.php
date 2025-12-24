@@ -47,8 +47,28 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
+        //$findUser = User::findOrFail($id);
+        //$rapports = $findUser->rapportsKa()->orderBy('date_rapport', 'desc')->get();
+
+        //return view('pages.kas.details_kas', compact('findUser', 'rapports'));
+    }
+
+    public function showKa(string $id)
+    {
         $findUser = User::findOrFail($id);
-        $rapports = $findUser->rapportsKa()->orderBy('date_rapport', 'desc')->get();
+        $rapports = $findUser->rapportsKa()
+            ->orderBy('date_rapport', 'desc')
+            ->get();
+
+        return view('pages.kas.details_kas', compact('findUser', 'rapports'));
+    }
+
+    public function showMa(string $id)
+    {
+        $findUser = User::findOrFail($id);
+        $rapports = $findUser->rapportsMa()
+            ->orderBy('date_rapport', 'desc')
+            ->get();
 
         return view('pages.mas.details_mas', compact('findUser', 'rapports'));
     }

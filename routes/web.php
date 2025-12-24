@@ -36,6 +36,17 @@ Route::middleware('auth')->group(function () {
 
     // Gestion des rapports MA
     Route::resource('rapports/gestions_rapports_ma', App\Http\Controllers\RapportMasController::class);
+    Route::resource('rapports/gestions_rapports_fp', App\Http\Controllers\RapportFpsController::class);
+
+    Route::get(
+        'users/gestions_utilisateurs/{id}/ma-rapports',
+        [UserController::class, 'showMa']
+    )->name('gestions_utilisateurs.show_ma');
+
+    Route::get(
+        'users/gestions_utilisateurs/{id}/ka-rapports',
+        [UserController::class, 'showKa']
+    )->name('gestions_utilisateurs.show_ka');
 
     Route::get('users/gestions_utilisateurs/{id}/fp-rapports', [UserController::class, 'showFp'])->name('gestions_utilisateurs.show_fp');
 

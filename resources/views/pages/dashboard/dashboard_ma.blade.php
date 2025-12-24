@@ -92,7 +92,7 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{{ $item->umva_id }}</span>
                                     <span class="badge bg-primary rounded-pill">
-                                        <a href="{{ route('gestions_utilisateurs.show', $item->id) }}"
+                                        <a href="{{ route('gestions_utilisateurs.show_ka', $item->id) }}"
                                             class="text-white text-decoration-none">
                                             <i class="bi bi-eye"></i>&nbsp;Voir
                                         </a>
