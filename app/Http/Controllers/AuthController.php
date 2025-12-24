@@ -33,7 +33,7 @@ class AuthController extends Controller
             if ($user) {
                 switch ($user->role_id) {
                     case 1:
-                        return redirect()->route('admin_dashboard')->with('success', 'Connexion réussie');
+                        return redirect()->route('dashboard')->with('success', 'Connexion réussie');
                     case 2:
                         return redirect()->route('dashboard_ka')->with('success', 'Connexion réussie');
                     case 3:

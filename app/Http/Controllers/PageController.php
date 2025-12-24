@@ -7,6 +7,9 @@ use App\Models\Groupe;
 use App\Models\RapportKa;
 use App\Models\User;
 use App\Models\RapportMa;
+use App\Models\RapportFp;
+use App\Models\RapportGroupe;
+
 use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
@@ -18,7 +21,21 @@ class PageController extends Controller
 
     public function dashboard()
     {
-        return view('pages.dashboard.admin_dashboard');
+        // Les totaux des utilisateurs
+        $totalGroups = Groupe::count();
+        $totalPfs = User::where('role_id', 4)->count();
+        $totalKas = User::where('role_id', 2)->count();
+        $totalMas = User::where('role_id', 3)->count();
+
+        // Les totaux des rapports
+        $totalRapportsG50 = RapportGroupe::count();
+        $totalRapportsPf = RapportFp::count();
+        $totalRapportsKa = RapportKa::count();
+        $totalRapportsMa = RapportMa::count();
+
+        //
+        $pfs = User::where('role_id', 4)->orderBy('created_at', 'desc')->take(10)->get();
+        return view('pages.dashboard.admin_dashboard', compact('totalGroups', 'totalPfs', 'totalKas', 'totalMas', 'totalRapportsG50', 'totalRapportsPf', 'totalRapportsKa', 'totalRapportsMa', 'pfs'));
     }
 
     public function dashboard_ka()

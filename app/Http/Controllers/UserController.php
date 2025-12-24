@@ -54,6 +54,19 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function showFp(string $id)
+    {
+        $findUser = User::findOrFail($id);
+        $rapports = $findUser->rapportsFp()
+            ->orderBy('date_rapport', 'desc')
+            ->get();
+
+        return view('pages.fps.details_fps', compact('findUser', 'rapports'));
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

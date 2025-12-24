@@ -15,7 +15,7 @@ Route::post('deconnexion', [AuthController::class, 'logout'])->name('logout');
 
 // Routes protégées
 Route::middleware('auth')->group(function () {
-    Route::get('dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('admin_dashboard', [PageController::class, 'dashboard'])->name('dashboard');
     Route::get('dashboard_ka', [PageController::class, 'dashboard_ka'])->name('dashboard_ka');
     Route::get('dashboard_ma', [PageController::class, 'dashboard_ma'])->name('dashboard_ma');
     Route::get('dashboard_fp', [PageController::class, 'dashboard_fp'])->name('dashboard_fp');
@@ -37,7 +37,8 @@ Route::middleware('auth')->group(function () {
     // Gestion des rapports MA
     Route::resource('rapports/gestions_rapports_ma', App\Http\Controllers\RapportMasController::class);
 
+    Route::get('users/gestions_utilisateurs/{id}/fp-rapports', [UserController::class, 'showFp'])->name('gestions_utilisateurs.show_fp');
+
     // Gestion des utilisateurs
     Route::resource('users/gestions_utilisateurs', UserController::class);
 });
-
