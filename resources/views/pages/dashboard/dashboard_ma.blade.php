@@ -46,18 +46,18 @@
                                         <form method="POST" action="#" enctype="multipart/form-data">
                                             @csrf
                                             <div class="mb-3">
-                                                <label for="kaName" class="small">umva id</label>
-                                                <input class="form-control" type="text" id="kaName" name="kaName"
+                                               <label for="maName" class="small">umva id</label>
+                                                <input class="form-control" type="text" id="maName" name="maName"
                                                     required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="kaName" class="small">nom</label>
-                                                <input class="form-control" type="text" id="kaName" name="kaName"
+                                                <label for="maName" class="small">nom</label>
+                                                <input class="form-control" type="text" id="maName" name="maName"
                                                     required>
                                             </div>
                                             <div class="mb-3">
-                                                <label for="kaLastName" class="small">prenom</label>
-                                                <input class="form-control" type="text" id="kaLastName" name="kaLastName"
+                                                <label for="maLastName" class="small">prenom</label>
+                                                <input class="form-control" type="text" id="maLastName" name="maLastName"
                                                     required>
                                             </div>
                                             <div class="mx-0">
