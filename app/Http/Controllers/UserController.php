@@ -109,4 +109,33 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * Update the password of the authenticated user.
+     */
+    public function updatePassword(Request $request, string $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Vérifier que l'utilisateur modifie son propre password
+        if (Auth::id() != $user->id) {
+            return redirect()->back()->with('error', 'Non autorisé');
+        }
+
+        // Vérifier le mot de passe actuel
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect']);
+        }
+
+        // Vérifier que les nouveaux mots de passe correspondent
+        if ($request->password !== $request->password_confirmation) {
+            return redirect()->back()->withErrors(['password_confirmation' => 'Les mots de passe ne correspondent pas']);
+        }
+
+        // Mettre à jour le mot de passe
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return redirect()->back()->with('success', 'Mot de passe mis à jour avec succès');
+    }
 }

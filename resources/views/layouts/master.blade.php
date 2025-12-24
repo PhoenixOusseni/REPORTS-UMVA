@@ -82,8 +82,9 @@
 
     <!-- FOOTER -->
     <footer class="text-center">
-        <p>Copyright © {{ date('Y') }} <span class="highlight">SAFRECO</span>. Tous droits réservés.</p>
-        <p>Tel : +226 61 34 65 54 | Mail : info@safreco.bf</p>
+        <p>Copyright © {{ date('Y') }} <span class="highlight">AUXFIN BURKINA</span>Tous droits réservés.</p>
+        <p>Tel : +226 61346554 | Mail : ousseni.ouedraogo@auxfin.com</p>
+        <p>Tel : +226 04541987 | Mail : messifa.nayodah@auxfin.com</p>
     </footer>
 
     <!-- Bootstrap JS -->

@@ -26,7 +26,7 @@
                                 <div class="card text-white bg-info h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">NOMBRE DES GROUPES G50</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalGroups }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -34,7 +34,7 @@
                                 <div class="card text-white bg-primary h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">NOMBRE DES PF</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalPfs }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -42,7 +42,7 @@
                                 <div class="card text-white bg-success h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">NOMBRE DES KAS</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalKas }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -50,7 +50,7 @@
                                 <div class="card text-white bg-warning h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">NOMBRE DES MAS</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalMas }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                 <div class="card text-white bg-danger h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">RAPPORT G50</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalRapportsG50 }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +80,7 @@
                                 <div class="card text-white bg-secondary h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">RAPPORT PF</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalRapportsPf }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +88,7 @@
                                 <div class="card text-white bg-warning h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">RAPPORT KA</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalRapportsKa }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +96,7 @@
                                 <div class="card text-white bg-info h-100">
                                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                         <h5 class="card-title">RAPPORT MA</h5>
-                                        <p class="card-text display-4">0114</p>
+                                        <p class="card-text display-4">{{ $totalRapportsMa }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -109,7 +109,7 @@
 
         <div class="row mb-5">
             {{-- MA SUPERVISÉS --}}
-            <div class="col-md-6 mt-5">
+            <div class="col-md-9 mt-5">
                 <div class="card shadow-sm">
                     <div class="card-header fw-bold bg-light">
                         <div class="d-flex justify-content-between align-items-center">
@@ -185,6 +185,8 @@
                             @forelse ($pfs as $item)
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>{{ $item->umva_id }}</span>
+                                    <span>{{ $item->nom }}</span>
+                                    <span>{{ $item->prenom }}</span>
                                     <span class="badge bg-primary rounded-pill">
                                         <a href="{{ route('gestions_utilisateurs.show_fp', $item->id) }}"
                                             class="text-white text-decoration-none">

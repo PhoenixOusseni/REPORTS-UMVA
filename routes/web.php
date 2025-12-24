@@ -52,4 +52,10 @@ Route::middleware('auth')->group(function () {
 
     // Gestion des utilisateurs
     Route::resource('users/gestions_utilisateurs', UserController::class);
+
+    // profils utilisateurs kas, mas, fp
+    Route::get('profile/{id}/ka_profile', [PageController::class, 'ka_profile'])->name('ka_profile');
+    Route::get('profile/{id}/ma_profile', [PageController::class, 'ma_profile'])->name('ma_profile');
+    Route::get('profile/{id}/fp_profile', [PageController::class, 'fp_profile'])->name('fp_profile');
+    Route::put('profile/{id}/update-password', [UserController::class, 'updatePassword'])->name('profile.update-password');
 });

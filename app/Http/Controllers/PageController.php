@@ -8,7 +8,6 @@ use App\Models\RapportFp;
 use App\Models\RapportKa;
 use App\Models\User;
 use App\Models\RapportMa;
-use App\Models\RapportFp;
 use App\Models\RapportGroupe;
 
 use Illuminate\Support\Facades\Auth;
@@ -69,16 +68,39 @@ class PageController extends Controller
         return view('pages.dashboard.dashboard_fp', compact('totalMas', 'mas', 'totalRapportsFp', 'rapportsFp'));
     }
 
+    // groupes details
     public function detail_groupes()
     {
         return view('pages.groupes.details_groupes');
     }
-    public function detail_kas()
+
+    // kas profile
+    public function ka_profile($id)
     {
-        return view('pages.kas.details_kas');
+        $user = User::findOrFail($id);
+        return view('pages.profils.ka_profil', compact('user'));
     }
-    public function detail_mas()
+
+    // ma profile
+    public function ma_profile($id)
     {
-        return view('pages.mas.details_mas');
+        $user = User::findOrFail($id);
+        return view('pages.profils.ma_profil', compact('user'));
     }
+
+    // fp profile
+    public function fp_profile($id)
+    {
+        $user = User::findOrFail($id);
+        return view('pages.profils.fp_profil', compact('user'));
+    }
+
+    // public function detail_kas()
+    // {
+    //     return view('pages.kas.details_kas');
+    // }
+    // public function detail_mas()
+    // {
+    //     return view('pages.mas.details_mas');
+    // }
 }
