@@ -95,12 +95,92 @@ class PageController extends Controller
         return view('pages.profils.fp_profil', compact('user'));
     }
 
-    // public function detail_kas()
-    // {
-    //     return view('pages.kas.details_kas');
-    // }
-    // public function detail_mas()
-    // {
-    //     return view('pages.mas.details_mas');
-    // }
+    // admin profile
+    public function admin_profile($id)
+    {
+        $user = User::findOrFail($id);
+        $findGroupe = Groupe::findOrFail($id);
+        $rapports = $findGroupe->rapports()->orderBy('date_rapport', 'desc')->get();
+        $rapportsKa = RapportKa::orderBy('created_at', 'desc')->take(10)->get();
+        $rapportsMa = RapportMa::orderBy('created_at', 'desc')->take(10)->get();
+        $rapportsFp = RapportFp::orderBy('created_at', 'desc')->take(10)->get();
+        return view('pages.profils.admin_profil', compact('user', 'rapports', 'rapportsKa', 'rapportsMa', 'rapportsFp'));
+    }
+
+    // Recherche des rapports groupes par plage de dates
+    public function searchRapportsGroupes(Request $request, $id)
+    {
+        $dateDebut = $request->input('date_debut');
+        $dateFin = $request->input('date_fin');
+
+        $findGroupe = Groupe::findOrFail($id);
+        $query = $findGroupe->rapports();
+
+        if ($dateDebut) {
+            $query->whereDate('date_rapport', '>=', $dateDebut);
+        }
+        if ($dateFin) {
+            $query->whereDate('date_rapport', '<=', $dateFin);
+        }
+
+        $rapports = $query->orderBy('date_rapport', 'desc')->get();
+        return response()->json(['success' => true, 'data' => $rapports]);
+    }
+
+    // Recherche des rapports KA par plage de dates
+    public function searchRapportsKa(Request $request)
+    {
+        $dateDebut = $request->input('date_debut');
+        $dateFin = $request->input('date_fin');
+
+        $query = RapportKa::query();
+
+        if ($dateDebut) {
+            $query->whereDate('date_rapport', '>=', $dateDebut);
+        }
+        if ($dateFin) {
+            $query->whereDate('date_rapport', '<=', $dateFin);
+        }
+
+        $rapportsKa = $query->orderBy('date_rapport', 'desc')->get();
+        return response()->json(['success' => true, 'data' => $rapportsKa]);
+    }
+
+    // Recherche des rapports MA par plage de dates
+    public function searchRapportsMa(Request $request)
+    {
+        $dateDebut = $request->input('date_debut');
+        $dateFin = $request->input('date_fin');
+
+        $query = RapportMa::query();
+
+        if ($dateDebut) {
+            $query->whereDate('date_rapport', '>=', $dateDebut);
+        }
+        if ($dateFin) {
+            $query->whereDate('date_rapport', '<=', $dateFin);
+        }
+
+        $rapportsMa = $query->orderBy('date_rapport', 'desc')->get();
+        return response()->json(['success' => true, 'data' => $rapportsMa]);
+    }
+
+    // Recherche des rapports FP par plage de dates
+    public function searchRapportsFp(Request $request)
+    {
+        $dateDebut = $request->input('date_debut');
+        $dateFin = $request->input('date_fin');
+
+        $query = RapportFp::query();
+
+        if ($dateDebut) {
+            $query->whereDate('date_rapport', '>=', $dateDebut);
+        }
+        if ($dateFin) {
+            $query->whereDate('date_rapport', '<=', $dateFin);
+        }
+
+        $rapportsFp = $query->orderBy('date_rapport', 'desc')->get();
+        return response()->json(['success' => true, 'data' => $rapportsFp]);
+    }
 }

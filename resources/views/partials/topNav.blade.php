@@ -48,7 +48,7 @@
                             <li><hr class="dropdown-divider"></li>
                             @if (Auth::user()->role_id == 1)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('dashboard') }}" style="padding: 10px 20px;">
+                                    <a class="dropdown-item" href="{{ route('admin_profile', ['id' => Auth::user()->id]) }}" style="padding: 10px 20px;">
                                         <i data-feather="grid" style="width: 16px; height: 16px; margin-right: 8px;"></i> Admin Dashboard
                                     </a>
                                 </li>

@@ -60,8 +60,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('users/gestions_utilisateurs', UserController::class);
 
     // profils utilisateurs kas, mas, fp
+    Route::get('profile/{id}/admin_profile', [PageController::class, 'admin_profile'])->name('admin_profile');
     Route::get('profile/{id}/ka_profile', [PageController::class, 'ka_profile'])->name('ka_profile');
     Route::get('profile/{id}/ma_profile', [PageController::class, 'ma_profile'])->name('ma_profile');
     Route::get('profile/{id}/fp_profile', [PageController::class, 'fp_profile'])->name('fp_profile');
     Route::put('profile/{id}/update-password', [UserController::class, 'updatePassword'])->name('profile.update-password');
+
+    // Routes de recherche par plage de dates
+    Route::post('profile/{id}/search-rapports-groupes', [PageController::class, 'searchRapportsGroupes'])->name('search-rapports-groupes');
+    Route::post('profile/search-rapports-ka', [PageController::class, 'searchRapportsKa'])->name('search-rapports-ka');
+    Route::post('profile/search-rapports-ma', [PageController::class, 'searchRapportsMa'])->name('search-rapports-ma');
+    Route::post('profile/search-rapports-fp', [PageController::class, 'searchRapportsFp'])->name('search-rapports-fp');
 });

@@ -91,9 +91,9 @@ class RapportGroupeController extends Controller
         $rapport = RapportGroupe::findOrFail($id);
 
         // Vérifier que l'utilisateur peut télécharger ce fichier
-        if (Auth::id() != $rapport->user_id) {
-            abort(403, 'Non autorisé');
-        }
+        // if (Auth::id() != $rapport->user_id) {
+        //     abort(403, 'Non autorisé');
+        // }
 
         // Vérifier que le fichier existe
         if (!Storage::disk('public')->exists($rapport->file)) {
