@@ -99,8 +99,8 @@ class PageController extends Controller
     public function admin_profile($id)
     {
         $user = User::findOrFail($id);
-        $findGroupe = Groupe::findOrFail($id);
-        $rapports = $findGroupe->rapports()->orderBy('date_rapport', 'desc')->get();
+        // Pour un admin, on récupère tous les rapports de tous les groupes
+        $rapports = RapportGroupe::orderBy('date_rapport', 'desc')->take(10)->get();
         $rapportsKa = RapportKa::orderBy('created_at', 'desc')->take(10)->get();
         $rapportsMa = RapportMa::orderBy('created_at', 'desc')->take(10)->get();
         $rapportsFp = RapportFp::orderBy('created_at', 'desc')->take(10)->get();
@@ -113,8 +113,8 @@ class PageController extends Controller
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
 
-        $findGroupe = Groupe::findOrFail($id);
-        $query = $findGroupe->rapports();
+        // Pour un admin, récupérer tous les rapports de tous les groupes
+        $query = RapportGroupe::with('groupe');
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -133,7 +133,7 @@ class PageController extends Controller
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
 
-        $query = RapportKa::query();
+        $query = RapportKa::with('user');
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -152,7 +152,7 @@ class PageController extends Controller
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
 
-        $query = RapportMa::query();
+        $query = RapportMa::with('user');
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -171,7 +171,7 @@ class PageController extends Controller
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
 
-        $query = RapportFp::query();
+        $query = RapportFp::with('user');
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);

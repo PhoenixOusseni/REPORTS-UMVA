@@ -5,8 +5,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Profil MA</h4>
+                    <a href="{{ route('dashboard_ma') }}" class="btn btn-light btn-sm">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
                 </div>
                 <div class="card-body">
                     <!-- Informations du profil -->

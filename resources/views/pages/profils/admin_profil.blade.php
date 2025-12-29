@@ -27,12 +27,17 @@
                             <div class="col-md-6">
                                 <div class="d-flex"
                                     style="background-color: #c8cdd259; padding: 10px; border-radius: 5px;">
-                                    <input type="date" class="form-control filter-date-start" id="dateDebut-groupes"
-                                        data-table="groupes-table" placeholder="Date début">
-                                    <input type="date" class="form-control filter-date-end ms-2" id="dateFin-groupes"
-                                        data-table="groupes-table" placeholder="Date fin">
-                                    <button type="button" class="btn btn-primary ms-2 w-100 btn-filter"
+                                    <input type="date"
+                                        id="dateDebut-groupes"
+                                        class="form-control filter-date-start"
                                         data-table="groupes-table">
+                                    <input type="date"
+                                        id="dateFin-groupes"
+                                        class="form-control filter-date-end ms-2"
+                                        data-table="groupes-table">
+                                    <button type="button"
+                                            class="btn btn-primary ms-2 w-100 btn-filter"
+                                            data-table="groupes-table">
                                         <i class="bi bi-search"></i> Rechercher
                                     </button>
                                 </div>
@@ -254,121 +259,152 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialiser DataTable pour chaque table
-        new simpleDatatables.DataTable(document.getElementById('groupes-table'));
-        new simpleDatatables.DataTable(document.getElementById('kas-table'));
-        new simpleDatatables.DataTable(document.getElementById('mas-table'));
-        new simpleDatatables.DataTable(document.getElementById('fps-table'));
+console.log('Script chargé !');
 
-        // Configuration des routes de recherche
-        const searchRoutes = {
-            'groupes-table': '{{ route("search-rapports-groupes", $user->id) }}',
-            'kas-table': '{{ route("search-rapports-ka") }}',
-            'mas-table': '{{ route("search-rapports-ma") }}',
-            'fps-table': '{{ route("search-rapports-fp") }}'
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM chargé !');
+    
+    // NE PAS initialiser DataTables pour permettre le filtrage dynamique
+    
+    const searchRoutes = {
+        'groupes-table': '{{ route("search-rapports-groupes", Auth::id()) }}',
+        'kas-table': '{{ route("search-rapports-ka") }}',
+        'mas-table': '{{ route("search-rapports-ma") }}',
+        'fps-table': '{{ route("search-rapports-fp") }}'
+    };
+
+    console.log('Routes configurées:', searchRoutes);
+
+    // Vérifier que les boutons existent
+    const buttons = document.querySelectorAll('.btn-filter');
+    console.log('Boutons trouvés:', buttons.length);
+
+    // Fonction pour formater la date
+    function formatDate(dateStr) {
+        const date = new Date(dateStr);
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('fr-FR', options);
+    }
+
+    // Fonction pour obtenir le nom d'affichage
+    function getDisplayName(item, tableId) {
+        if (tableId === 'groupes-table') {
+            return item.groupe ? item.groupe.nom : '-';
+        } else {
+            return item.user ? `${item.user.nom} ${item.user.prenom}` : '-';
+        }
+    }
+
+    // Fonction pour obtenir l'URL de téléchargement
+    function getDownloadUrl(item, tableId) {
+        const routes = {
+            'groupes-table': `/rapports/gestions_rapports_groupes/${item.id}/download`,
+            'kas-table': `/rapports/gestions_rapports_ka/${item.id}/download`,
+            'mas-table': `/rapports/gestions_rapports_ma/${item.id}/download`,
+            'fps-table': `/rapports/gestions_rapports_fp/${item.id}/download`
         };
+        return routes[tableId] || '#';
+    }
 
-        // Fonction pour formater la date au format d F Y
-        function formatDate(dateStr) {
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            const date = new Date(dateStr);
-            const day = date.getDate();
-            const month = months[date.getMonth()];
-            const year = date.getFullYear();
-            return `${day} ${month} ${year}`;
-        }
-
-        // Fonction pour générer la route de téléchargement appropriée
-        function getDownloadRoute(item, tableId) {
-            // Construire les URLs de téléchargement en fonction du type de table
-            if (tableId === 'groupes-table') {
-                return `/rapports/gestions_rapports_groupes/${item.id}/download`;
-            } else if (tableId === 'kas-table') {
-                return `/rapports/gestions_rapports_ka/${item.id}/download`;
-            } else if (tableId === 'mas-table') {
-                return `/rapports/gestions_rapports_ma/${item.id}/download`;
-            } else if (tableId === 'fps-table') {
-                return `/rapports/gestions_rapports_fp/${item.id}/download`;
+    document.querySelectorAll('.btn-filter').forEach(button => {
+        console.log('Ajout listener sur bouton:', button.dataset.table);
+        
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Bouton cliqué !');
+            
+            const tableId = button.dataset.table;
+            console.log('Table ID:', tableId);
+            
+            // Obtenir le suffixe correct: groupes, kas, mas, fps
+            const suffix = tableId.replace('-table', '');
+            console.log('Suffix:', suffix);
+            
+            const dateDebut = document.getElementById(`dateDebut-${suffix}`);
+            const dateFin = document.getElementById(`dateFin-${suffix}`);
+            
+            console.log('Elements trouvés:', dateDebut, dateFin);
+            
+            if (!dateDebut || !dateFin) {
+                console.error('Champs de date non trouvés:', `dateDebut-${suffix}`, `dateFin-${suffix}`);
+                alert('Erreur: Champs de date non trouvés!');
+                return;
             }
-            return '#';
-        }
 
-        // Ajouter les événements de clic sur les boutons de filtre
-        document.querySelectorAll('.btn-filter').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const tableId = this.getAttribute('data-table');
-                const dateDebut = document.getElementById('dateDebut-' + tableId.replace('-table', '')).value;
-                const dateFin = document.getElementById('dateFin-' + tableId.replace('-table', '')).value;
-                const table = document.getElementById(tableId);
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            console.log('Tbody trouvé:', tbody);
+            
+            console.log('Valeurs:', dateDebut.value, dateFin.value);
 
-                // Afficher un message de chargement
-                const tbody = table.querySelector('tbody');
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Chargement...</span></div></td></tr>';
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center">
+                        <div class="spinner-border"></div> Chargement...
+                    </td>
+                </tr>`;
 
-                // Appel AJAX
-                fetch(searchRoutes[tableId], {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        date_debut: dateDebut,
-                        date_fin: dateFin
-                    })
+            fetch(searchRoutes[tableId], {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    date_debut: dateDebut.value,
+                    date_fin: dateFin.value
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        let html = '';
-                        if (data.data.length === 0) {
-                            html = '<tr><td colspan="5" class="text-center">Aucun rapport disponible.</td></tr>';
-                        } else {
-                            data.data.forEach((item, index) => {
-                                const downloadUrl = getDownloadRoute(item, tableId);
-                                const displayName = item.groupe ? item.groupe.nom : (item.user ? item.user.nom + ' ' + item.user.prenom : '-');
-                                html += `
-                                    <tr>
-                                        <td>${index + 1}</td>
-                                        <td>${formatDate(item.date_rapport)}</td>
-                                        <td>${formatDate(item.created_at)}</td>
-                                        <td>${displayName}</td>
-                                        <td>
-                                            <a href="${downloadUrl}" class="btn btn-primary btn-sm">
-                                                <i class="bi bi-download"></i>&nbsp; Télécharger
-                                            </a>
-                                        </td>
-                                    </tr>
-                                `;
-                            });
-                        }
-                        tbody.innerHTML = html;
-                    } else {
-                        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Erreur lors de la recherche.</td></tr>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Erreur lors de la recherche.</td></tr>';
-                });
-            });
-        });
-
-        // Ajouter le raccourci Entrée sur les champs de date
-        document.querySelectorAll('.filter-date-start, .filter-date-end').forEach(input => {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    const tableId = this.getAttribute('data-table');
-                    document.querySelector('.btn-filter[data-table="' + tableId + '"]').click();
+            })
+            .then(res => {
+                console.log('Réponse reçue, status:', res.status);
+                return res.json();
+            })
+            .then(data => {
+                console.log('Données reçues:', data);
+                
+                if (!data.success || data.data.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="text-center">
+                                Aucun rapport trouvé pour cette période
+                            </td>
+                        </tr>`;
+                    return;
                 }
+
+                let html = '';
+                data.data.forEach((item, index) => {
+                    const displayName = getDisplayName(item, tableId);
+                    const downloadUrl = getDownloadUrl(item, tableId);
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${formatDate(item.date_rapport)}</td>
+                            <td>${formatDate(item.created_at)}</td>
+                            <td>${displayName}</td>
+                            <td>
+                                <a href="${downloadUrl}" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-download"></i> Télécharger
+                                </a>
+                            </td>
+                        </tr>`;
+                });
+
+                tbody.innerHTML = html;
+            })
+            .catch(err => {
+                console.error('Erreur complète:', err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-danger text-center">
+                            Erreur lors de la recherche: ${err.message}
+                        </td>
+                    </tr>`;
             });
         });
     });
+});
 </script>
+
 @endpush
 @endsection

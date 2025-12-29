@@ -116,6 +116,8 @@
     <!-- Bootstrap JS -->
     @include('partials.script')
 
+    @stack('scripts')
+
     <script>
         // Initialiser et afficher le toast automatiquement
         document.addEventListener('DOMContentLoaded', function() {
