@@ -166,7 +166,26 @@
                     </div>
 
                     <div class="card-body p-0">
-                        <ul class="list-group list-group-flush">
+                        <div class="p-3">
+                            <div class="row mb-2 align-items-center">
+                                <div class="col-md-3">
+                                    <small class="text-muted fw-bold">Filtrer par période</small>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="d-flex" style="background-color: #f8f9fa; padding: 8px; border-radius: 5px; border: 1px solid #dee2e6;">
+                                        <input type="date" class="form-control form-control-sm filter-date-start" id="dateDebut-fps"
+                                            data-table="fps-table" placeholder="Date début">
+                                        <input type="date" class="form-control form-control-sm filter-date-end ms-2" id="dateFin-fps"
+                                            data-table="fps-table" placeholder="Date fin">
+                                        <button type="button" class="btn btn-primary btn-sm ms-2 btn-filter" style="white-space: nowrap;"
+                                            data-table="fps-table">
+                                            <i class="bi bi-search"></i> Rechercher
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="list-group list-group-flush" id="rapports-fp-list">
                             @forelse ($rapportsFp as $item)
                                 <li>
                                     <a href="#" class="text-decoration-none">
@@ -195,4 +214,79 @@
             </div>
         </div>
     </div>
+    
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const button = document.querySelector('.btn-filter[data-table="fps-table"]');
+    
+    if (button) {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            const dateDebut = document.getElementById('dateDebut-fps');
+            const dateFin = document.getElementById('dateFin-fps');
+            const listRapports = document.getElementById('rapports-fp-list');
+            
+            if (!dateDebut || !dateFin) {
+                alert('Erreur: Champs de date non trouvés!');
+                return;
+            }
+
+            listRapports.innerHTML = '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+
+            fetch('{{ route("search-rapports-fp") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    date_debut: dateDebut.value,
+                    date_fin: dateFin.value,
+                    user_id: {{ Auth::id() }}
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (!data.success || data.data.length === 0) {
+                    listRapports.innerHTML = '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
+                    return;
+                }
+
+                let html = '';
+                data.data.forEach(item => {
+                    const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+                    const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+                    
+                    html += `
+                        <li>
+                            <a href="#" class="text-decoration-none">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Rapport du ${dateRapport}</strong><br>
+                                        <small class="text-muted">Créé le ${createdAt}</small>
+                                    </div>
+                                    <a href="/rapports/gestions_rapports_fp/${item.id}/download" class="text-decoration-none">
+                                        <span class="badge bg-primary rounded-pill">
+                                            <i class="bi bi-download"></i>&nbsp; Télécharger
+                                        </span>
+                                    </a>
+                                </div>
+                            </a>
+                        </li>`;
+                });
+
+                listRapports.innerHTML = html;
+            })
+            .catch(err => {
+                console.error('Erreur:', err);
+                listRapports.innerHTML = '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' + err.message + '</li>';
+            });
+        });
+    }
+});
+</script>
+@endpush
+    
 @endsection

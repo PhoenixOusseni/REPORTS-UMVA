@@ -132,6 +132,7 @@ class PageController extends Controller
     {
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
+         $query = RapportKa::where('user_id', Auth::id());
 
         $query = RapportKa::with('user');
 
@@ -151,8 +152,7 @@ class PageController extends Controller
     {
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
-
-        $query = RapportMa::with('user');
+         $query = RapportMa::where('user_id', Auth::id());
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -170,8 +170,9 @@ class PageController extends Controller
     {
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
-
-        $query = RapportFp::with('user');
+        $query = RapportFp::where('user_id', Auth::id());
+        // Filtrer par utilisateur si fourni
+        
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -183,4 +184,6 @@ class PageController extends Controller
         $rapportsFp = $query->orderBy('date_rapport', 'desc')->get();
         return response()->json(['success' => true, 'data' => $rapportsFp]);
     }
+
+    
 }

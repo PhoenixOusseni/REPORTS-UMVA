@@ -71,4 +71,18 @@ Route::middleware('auth')->group(function () {
     Route::post('profile/search-rapports-ka', [PageController::class, 'searchRapportsKa'])->name('search-rapports-ka');
     Route::post('profile/search-rapports-ma', [PageController::class, 'searchRapportsMa'])->name('search-rapports-ma');
     Route::post('profile/search-rapports-fp', [PageController::class, 'searchRapportsFp'])->name('search-rapports-fp');
+
+    Route::post(
+    'fp/search-rapports',
+    [PageController::class, 'searchRapportsFp']
+)->name('fp.search-rapports');
+Route::post(
+    'ka/search-rapports',
+    [PageController::class, 'searchRapportsKa']
+)->name('ka.search-rapports');
+Route::post(
+    'ma/search-rapports',
+    [PageController::class, 'searchRapportsMa']
+)->name('ma.search-rapports');
+
 });
