@@ -122,6 +122,11 @@
                                 </li>
                             @endforelse
                         </ul>
+                        @if ($rapports->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $rapports->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -131,15 +136,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('.btn-filter[data-table="groupes-table"]');
-    
+
     if (button) {
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             const dateDebut = document.getElementById('dateDebut-groupes');
             const dateFin = document.getElementById('dateFin-groupes');
             const listGroup = document.querySelector('.list-group');
-            
+
             if (!dateDebut || !dateFin) {
                 alert('Erreur: Champs de date non trouvés!');
                 return;
@@ -170,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
                     const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
                     const groupeNom = item.groupe ? item.groupe.nom : '';
-                    
+
                     html += `
                         <li>
                             <a href="#" class="text-decoration-none">

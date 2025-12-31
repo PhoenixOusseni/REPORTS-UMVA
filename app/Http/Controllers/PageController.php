@@ -41,9 +41,9 @@ class PageController extends Controller
     public function dashboard_ka()
     {
         $totalGroups = Groupe::where('user_id', Auth::id())->count();
-        $collections = Groupe::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $collections = Groupe::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
         $totalRapportsKa = RapportKa::where('user_id', Auth::id())->count();
-        $rapportsKa = RapportKa::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $rapportsKa = RapportKa::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
 
         return view('pages.dashboard.dashboard_ka', compact('totalGroups', 'collections', 'totalRapportsKa', 'rapportsKa'));
     }
@@ -51,9 +51,9 @@ class PageController extends Controller
     public function dashboard_ma()
     {
         $totalKas = User::where('role_id', 2)->where('supervisor_id', Auth::id())->count();
-        $kas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $kas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
         $totalRapportsMa = RapportMa::where('user_id', Auth::id())->count();
-        $rapportsMa = RapportMa::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $rapportsMa = RapportMa::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
 
         return view('pages.dashboard.dashboard_ma', compact('totalKas', 'kas', 'totalRapportsMa', 'rapportsMa'));
     }
@@ -61,9 +61,9 @@ class PageController extends Controller
     public function dashboard_fp()
     {
         $totalMas = User::where('role_id', 2)->where('supervisor_id', Auth::id())->count();
-        $mas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $mas = User::where('supervisor_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
         $totalRapportsFp = RapportFp::where('user_id', Auth::id())->count();
-        $rapportsFp = RapportFp::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(10)->get();
+        $rapportsFp = RapportFp::where('user_id', Auth::id())->orderBy('created_at', 'desc')->paginate(10);
 
         return view('pages.dashboard.dashboard_fp', compact('totalMas', 'mas', 'totalRapportsFp', 'rapportsFp'));
     }
@@ -170,9 +170,9 @@ class PageController extends Controller
     {
         $dateDebut = $request->input('date_debut');
         $dateFin = $request->input('date_fin');
+        $page = $request->input('page', 1);
         $query = RapportFp::where('user_id', Auth::id());
         // Filtrer par utilisateur si fourni
-        
 
         if ($dateDebut) {
             $query->whereDate('date_rapport', '>=', $dateDebut);
@@ -181,9 +181,12 @@ class PageController extends Controller
             $query->whereDate('date_rapport', '<=', $dateFin);
         }
 
-        $rapportsFp = $query->orderBy('date_rapport', 'desc')->get();
-        return response()->json(['success' => true, 'data' => $rapportsFp]);
+        $rapportsFp = $query->orderBy('date_rapport', 'desc')->paginate(5, ['*'], 'page', $page);
+        return response()->json(['success' => true, 'data' => $rapportsFp->items(), 'pagination' => [
+            'current_page' => $rapportsFp->currentPage(),
+            'last_page' => $rapportsFp->lastPage(),
+            'total' => $rapportsFp->total(),
+            'per_page' => $rapportsFp->perPage(),
+        ]]);
     }
-
-    
 }

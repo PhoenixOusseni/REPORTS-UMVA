@@ -10,22 +10,6 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -42,23 +26,11 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'Utilisateur créé avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //$findUser = User::findOrFail($id);
-        //$rapports = $findUser->rapportsKa()->orderBy('date_rapport', 'desc')->get();
-
-        //return view('pages.kas.details_kas', compact('findUser', 'rapports'));
-    }
-
     public function showKa(string $id)
     {
         $findUser = User::findOrFail($id);
         $rapports = $findUser->rapportsKa()
-            ->orderBy('date_rapport', 'desc')
-            ->get();
+            ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.kas.details_kas', compact('findUser', 'rapports'));
     }
@@ -67,8 +39,7 @@ class UserController extends Controller
     {
         $findUser = User::findOrFail($id);
         $rapports = $findUser->rapportsMa()
-            ->orderBy('date_rapport', 'desc')
-            ->get();
+            ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.mas.details_mas', compact('findUser', 'rapports'));
     }
@@ -80,34 +51,9 @@ class UserController extends Controller
     {
         $findUser = User::findOrFail($id);
         $rapports = $findUser->rapportsFp()
-            ->orderBy('date_rapport', 'desc')
-            ->get();
+            ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.fps.details_fps', compact('findUser', 'rapports'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     /**

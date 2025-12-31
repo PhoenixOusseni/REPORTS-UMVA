@@ -172,13 +172,14 @@
                                     <small class="text-muted fw-bold">Filtrer par période</small>
                                 </div>
                                 <div class="col-md-9">
-                                    <div class="d-flex" style="background-color: #f8f9fa; padding: 8px; border-radius: 5px; border: 1px solid #dee2e6;">
-                                        <input type="date" class="form-control form-control-sm filter-date-start" id="dateDebut-fps"
-                                            data-table="fps-table" placeholder="Date début">
-                                        <input type="date" class="form-control form-control-sm filter-date-end ms-2" id="dateFin-fps"
-                                            data-table="fps-table" placeholder="Date fin">
-                                        <button type="button" class="btn btn-primary btn-sm ms-2 btn-filter" style="white-space: nowrap;"
-                                            data-table="fps-table">
+                                    <div class="d-flex"
+                                        style="background-color: #f8f9fa; padding: 8px; border-radius: 5px; border: 1px solid #dee2e6;">
+                                        <input type="date" class="form-control form-control-sm filter-date-start"
+                                            id="dateDebut-fps" data-table="fps-table" placeholder="Date début">
+                                        <input type="date" class="form-control form-control-sm filter-date-end ms-2"
+                                            id="dateFin-fps" data-table="fps-table" placeholder="Date fin">
+                                        <button type="button" class="btn btn-primary btn-sm ms-2 btn-filter"
+                                            style="white-space: nowrap;" data-table="fps-table">
                                             <i class="bi bi-search"></i> Rechercher
                                         </button>
                                     </div>
@@ -209,84 +210,177 @@
                                 <li class="list-group-item">Aucun rapport disponible.</li>
                             @endforelse
                         </ul>
+                        @if ($rapportsFp->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $rapportsFp->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('.btn-filter[data-table="fps-table"]');
-    
-    if (button) {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const dateDebut = document.getElementById('dateDebut-fps');
-            const dateFin = document.getElementById('dateFin-fps');
-            const listRapports = document.getElementById('rapports-fp-list');
-            
-            if (!dateDebut || !dateFin) {
-                alert('Erreur: Champs de date non trouvés!');
-                return;
-            }
 
-            listRapports.innerHTML = '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const button = document.querySelector('.btn-filter[data-table="fps-table"]');
+                let currentFilters = {
+                    dateDebut: '',
+                    dateFin: '',
+                    currentPage: 1
+                };
 
-            fetch('{{ route("search-rapports-fp") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    date_debut: dateDebut.value,
-                    date_fin: dateFin.value,
-                    user_id: {{ Auth::id() }}
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success || data.data.length === 0) {
-                    listRapports.innerHTML = '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
-                    return;
+                function loadRapports(page = 1) {
+                    const dateDebut = document.getElementById('dateDebut-fps');
+                    const dateFin = document.getElementById('dateFin-fps');
+                    const listRapports = document.getElementById('rapports-fp-list');
+                    const paginationContainer = document.querySelector('.card-body .p-3:last-child');
+
+                    if (!dateDebut || !dateFin) {
+                        alert('Erreur: Champs de date non trouvés!');
+                        return;
+                    }
+
+                    listRapports.innerHTML =
+                        '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+                    if (paginationContainer) paginationContainer.style.display = 'none';
+
+                    fetch('{{ route('search-rapports-fp') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            },
+                            body: JSON.stringify({
+                                date_debut: currentFilters.dateDebut || dateDebut.value,
+                                date_fin: currentFilters.dateFin || dateFin.value,
+                                user_id: {{ Auth::id() }},
+                                page: page
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.success || data.data.length === 0) {
+                                listRapports.innerHTML =
+                                    '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
+                                if (paginationContainer) paginationContainer.innerHTML = '';
+                                return;
+                            }
+
+                            let html = '';
+                            data.data.forEach(item => {
+                                const dateRapport = new Date(item.date_rapport).toLocaleDateString(
+                                'fr-FR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                });
+                                const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                });
+
+                                html += `
+                    <li>
+                        <a href="#" class="text-decoration-none">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Rapport du ${dateRapport}</strong><br>
+                                    <small class="text-muted">Créé le ${createdAt}</small>
+                                </div>
+                                <a href="/rapports/gestions_rapports_fp/${item.id}/download" class="text-decoration-none">
+                                    <span class="badge bg-primary rounded-pill">
+                                        <i class="bi bi-download"></i>&nbsp; Télécharger
+                                    </span>
+                                </a>
+                            </div>
+                        </a>
+                    </li>`;
+                            });
+
+                            listRapports.innerHTML = html;
+
+                            // Afficher la pagination
+                            if (data.pagination && data.pagination.last_page > 1) {
+                                let paginationHtml =
+                                    '<nav><ul class="pagination pagination-sm justify-content-center mb-0">';
+
+                                // Bouton Précédent
+                                if (data.pagination.current_page > 1) {
+                                    paginationHtml +=
+                                        `<li class="page-item"><a class="page-link" href="#" data-page="${data.pagination.current_page - 1}">Précédent</a></li>`;
+                                } else {
+                                    paginationHtml +=
+                                        '<li class="page-item disabled"><span class="page-link">Précédent</span></li>';
+                                }
+
+                                // Numéros de page
+                                for (let i = 1; i <= data.pagination.last_page; i++) {
+                                    if (i === data.pagination.current_page) {
+                                        paginationHtml +=
+                                            `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+                                    } else {
+                                        paginationHtml +=
+                                            `<li class="page-item"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
+                                    }
+                                }
+
+                                // Bouton Suivant
+                                if (data.pagination.current_page < data.pagination.last_page) {
+                                    paginationHtml +=
+                                        `<li class="page-item"><a class="page-link" href="#" data-page="${data.pagination.current_page + 1}">Suivant</a></li>`;
+                                } else {
+                                    paginationHtml +=
+                                        '<li class="page-item disabled"><span class="page-link">Suivant</span></li>';
+                                }
+
+                                paginationHtml += '</ul></nav>';
+
+                                if (paginationContainer) {
+                                    paginationContainer.innerHTML = paginationHtml;
+                                    paginationContainer.style.display = 'block';
+
+                                    // Ajouter les événements de clic sur les liens de pagination
+                                    paginationContainer.querySelectorAll('a.page-link').forEach(link => {
+                                        link.addEventListener('click', (e) => {
+                                            e.preventDefault();
+                                            const page = parseInt(e.target.getAttribute(
+                                                'data-page'));
+                                            currentFilters.currentPage = page;
+                                            loadRapports(page);
+                                        });
+                                    });
+                                }
+                            } else if (paginationContainer) {
+                                paginationContainer.innerHTML = '';
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Erreur:', err);
+                            listRapports.innerHTML =
+                                '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' +
+                                err.message + '</li>';
+                        });
                 }
 
-                let html = '';
-                data.data.forEach(item => {
-                    const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    
-                    html += `
-                        <li>
-                            <a href="#" class="text-decoration-none">
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>Rapport du ${dateRapport}</strong><br>
-                                        <small class="text-muted">Créé le ${createdAt}</small>
-                                    </div>
-                                    <a href="/rapports/gestions_rapports_fp/${item.id}/download" class="text-decoration-none">
-                                        <span class="badge bg-primary rounded-pill">
-                                            <i class="bi bi-download"></i>&nbsp; Télécharger
-                                        </span>
-                                    </a>
-                                </div>
-                            </a>
-                        </li>`;
-                });
+                if (button) {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
 
-                listRapports.innerHTML = html;
-            })
-            .catch(err => {
-                console.error('Erreur:', err);
-                listRapports.innerHTML = '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' + err.message + '</li>';
+                        const dateDebut = document.getElementById('dateDebut-fps');
+                        const dateFin = document.getElementById('dateFin-fps');
+
+                        currentFilters.dateDebut = dateDebut.value;
+                        currentFilters.dateFin = dateFin.value;
+                        currentFilters.currentPage = 1;
+
+                        loadRapports(1);
+                    });
+                }
             });
-        });
-    }
-});
-</script>
-@endpush
-    
+        </script>
+    @endpush
 @endsection

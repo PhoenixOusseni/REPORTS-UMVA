@@ -7,6 +7,7 @@ use App\Models\Diligence;
 use App\Models\Service;
 use App\Models\Traitement;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Define relationships
+        Paginator::useBootstrapFive();
     }
 }

@@ -45,8 +45,8 @@ class GroupeController extends Controller
     public function show(string $id)
     {
         $findGroupe = Groupe::findOrFail($id);
-        $rapports = $findGroupe->rapports()->orderBy('date_rapport', 'desc')->get();
-        
+        $rapports = $findGroupe->rapports()->orderBy('date_rapport', 'desc')->paginate(10);
+
         return view('pages.groupes.details_groupes', compact('findGroupe', 'rapports'));
     }
 

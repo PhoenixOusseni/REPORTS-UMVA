@@ -89,6 +89,11 @@
                                 </div>
                             @endforelse
                         </ul>
+                        @if ($collections->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $collections->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -198,6 +203,11 @@
                                 </div>
                             @endforelse
                         </ul>
+                        @if ($rapportsKa->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $rapportsKa->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -208,15 +218,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('.btn-filter[data-table="kas-table"]');
-    
+
     if (button) {
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             const dateDebut = document.getElementById('dateDebut-kas');
             const dateFin = document.getElementById('dateFin-kas');
             const listRapports = document.getElementById('rapports-ka-list');
-            
+
             if (!dateDebut || !dateFin) {
                 alert('Erreur: Champs de date non trouvés!');
                 return;
@@ -248,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
                     const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
                     const umvaId = item.user ? item.user.umva_id : '';
-                    
+
                     html += `
                         <li>
                             <a href="#" class="text-decoration-none">

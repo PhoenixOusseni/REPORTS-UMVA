@@ -104,6 +104,11 @@
                                 </li>
                             @endforelse
                         </ul>
+                        @if ($kas->hasPages())
+                            <div class="d-flex justify-content-center">
+                                {{ $kas->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -204,6 +209,11 @@
                                 <li class="list-group-item">Aucun rapport disponible.</li>
                             @endforelse
                         </ul>
+                        @if ($rapportsMa->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $rapportsMa->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -214,15 +224,15 @@
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const button = document.querySelector('.btn-filter[data-table="mas-table"]');
-    
+
     if (button) {
         button.addEventListener('click', (e) => {
             e.preventDefault();
-            
+
             const dateDebut = document.getElementById('dateDebut-mas');
             const dateFin = document.getElementById('dateFin-mas');
             const listRapports = document.getElementById('rapports-ma-list');
-            
+
             if (!dateDebut || !dateFin) {
                 alert('Erreur: Champs de date non trouvés!');
                 return;
@@ -253,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.data.forEach(item => {
                     const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
                     const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    
+
                     html += `
                         <li>
                             <div class="list-group-item d-flex justify-content-between align-items-center">

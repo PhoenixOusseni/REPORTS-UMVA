@@ -34,8 +34,7 @@
                                 data-table="kas-table" placeholder="Date début">
                             <input type="date" class="form-control filter-date-end ms-2" id="dateFin-kas"
                                 data-table="kas-table" placeholder="Date fin">
-                            <button type="button" class="btn btn-primary ms-2 w-100 btn-filter"
-                                data-table="kas-table">
+                            <button type="button" class="btn btn-primary ms-2 w-100 btn-filter" data-table="kas-table">
                                 <i class="bi bi-search"></i> Rechercher
                             </button>
                         </div>
@@ -50,11 +49,14 @@
                                     <a href="#" class="text-decoration-none">
                                         <div class="list-group-item d-flex justify-content-between align-items-center">
                                             <div>
-                                                <strong>Rapport du {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
-                                                <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                                <strong>Rapport du
+                                                    {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                                <small class="text-muted">Créé le
+                                                    {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                             </div>
                                             <div>
-                                                <a href="{{ route('gestions_rapports_ka.download', $item->id) }}" class="btn btn-primary btn-sm">
+                                                <a href="{{ route('gestions_rapports_ka.download', $item->id) }}"
+                                                    class="btn btn-primary btn-sm">
                                                     <i class="bi bi-download"></i> Télécharger
                                                 </a>
                                             </div>
@@ -67,56 +69,74 @@
                                 </li>
                             @endforelse
                         </ul>
+                        @if ($rapports->hasPages())
+                            <div class="p-3 d-flex justify-content-center">
+                                {{ $rapports->links('pagination::bootstrap-5') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('.btn-filter[data-table="kas-table"]');
-    
-    if (button) {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            
-            const dateDebut = document.getElementById('dateDebut-kas');
-            const dateFin = document.getElementById('dateFin-kas');
-            const listGroup = document.querySelector('.list-group');
-            
-            if (!dateDebut || !dateFin) {
-                alert('Erreur: Champs de date non trouvés!');
-                return;
-            }
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const button = document.querySelector('.btn-filter[data-table="kas-table"]');
 
-            listGroup.innerHTML = '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+                if (button) {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
 
-            fetch('{{ route("search-rapports-ka") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    date_debut: dateDebut.value,
-                    date_fin: dateFin.value
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success || data.data.length === 0) {
-                    listGroup.innerHTML = '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
-                    return;
-                }
+                        const dateDebut = document.getElementById('dateDebut-kas');
+                        const dateFin = document.getElementById('dateFin-kas');
+                        const listGroup = document.querySelector('.list-group');
 
-                let html = '';
-                data.data.forEach(item => {
-                    const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    
-                    html += `
+                        if (!dateDebut || !dateFin) {
+                            alert('Erreur: Champs de date non trouvés!');
+                            return;
+                        }
+
+                        listGroup.innerHTML =
+                            '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+
+                        fetch('{{ route('search-rapports-ka') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        .getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    date_debut: dateDebut.value,
+                                    date_fin: dateFin.value
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success || data.data.length === 0) {
+                                    listGroup.innerHTML =
+                                        '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
+                                    return;
+                                }
+
+                                let html = '';
+                                data.data.forEach(item => {
+                                    const dateRapport = new Date(item.date_rapport)
+                                        .toLocaleDateString('fr-FR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                    const createdAt = new Date(item.created_at).toLocaleDateString(
+                                        'fr-FR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+
+                                    html += `
                         <li>
                             <a href="#" class="text-decoration-none">
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
@@ -132,17 +152,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                             </a>
                         </li>`;
-                });
+                                });
 
-                listGroup.innerHTML = html;
-            })
-            .catch(err => {
-                console.error('Erreur:', err);
-                listGroup.innerHTML = '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' + err.message + '</li>';
+                                listGroup.innerHTML = html;
+                            })
+                            .catch(err => {
+                                console.error('Erreur:', err);
+                                listGroup.innerHTML =
+                                    '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' +
+                                    err.message + '</li>';
+                            });
+                    });
+                }
             });
-        });
-    }
-});
-</script>
-@endpush
+        </script>
+    @endpush
 @endsection
