@@ -69,7 +69,16 @@ class RapportMasController extends Controller
             abort(404, 'Fichier non trouvé');
         }
 
-        // Télécharger le fichier
-        return Storage::disk('public')->download($rapport->file);
+        // Extraire le nom du fichier et s'assurer qu'il a l'extension .txt
+        $originalFilename = basename($rapport->file);
+        $filenameWithoutExt = pathinfo($originalFilename, PATHINFO_FILENAME);
+        $downloadFilename = $filenameWithoutExt . '.txt';
+
+        // Télécharger le fichier avec l'extension .txt et le type MIME text/plain
+        return Storage::disk('public')->download(
+            $rapport->file,
+            $downloadFilename,
+            ['Content-Type' => 'text/plain']
+        );
     }
 }
