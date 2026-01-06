@@ -19,6 +19,7 @@ class UserController extends Controller
             'prenom' => $request->prenom,
             'umva_id' => $request->umva_id,
             'password' => Hash::make($request->password),
+            'sexe' => $request->sexe,
             'role_id' => $request->role_id,
             'supervisor_id' => $request->supervisor_id,
         ]);

@@ -16,33 +16,13 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                'nom' => 'OUEDRAOGO',
-                'prenom' => 'Ousseni',
+                'nom' => 'Super',
+                'prenom' => 'User',
                 'umva_id' => 'superuser.bf',
                 'password' => Hash::make('password'),
+                'sexe' => 'Homme',
                 'role_id' => 1,
             ],
-            // [
-            //     'nom' => 'DIALLO',
-            //     'prenom' => 'Aminata',
-            //     'umva_id' => 'ka.kaya',
-            //     'password' => Hash::make('password'),
-            //     'role_id' => 2,
-            // ],
-            // [
-            //     'nom' => 'TRAORE',
-            //     'prenom' => 'Moussa',
-            //     'umva_id' => 'ma.sanmatenga',
-            //     'password' => Hash::make('password'),
-            //     'role_id' => 3,
-            // ],
-            // [
-            //     'nom' => 'COULIBALY',
-            //     'prenom' => 'Fatoumata',
-            //     'umva_id' => 'pf.centre-nord',
-            //     'password' => Hash::make('password'),
-            //     'role_id' => 4,
-            // ],
         ]);
     }
 }

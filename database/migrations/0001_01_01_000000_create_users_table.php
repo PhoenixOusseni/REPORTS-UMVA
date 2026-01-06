@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('umva_id')->unique();
             $table->string('nom');
             $table->string('prenom');
+            $table->string('sexe')->nullable();
             $table->string('password');
             $table->foreignId('role_id')->nullable()->constrained('roles')->onDelete('cascade')->onUpdate('cascade');
 

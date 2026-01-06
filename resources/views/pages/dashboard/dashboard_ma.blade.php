@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2>BIENVENUE {{ Auth::user()->nom }} {{ Auth::user()->prenom }}</h2>
+                <h2>BIENVENUE {{ Auth::user()->umva_id }}</h2>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard_ma') }}">Accueil</a></li>
@@ -59,6 +59,24 @@
                                             <label for="prenom" class="small">Prénom</label>
                                             <input class="form-control" type="text" id="prenom" name="prenom"
                                                 required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="small d-block">Sexe</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sexe"
+                                                    id="sexe_masculin" value="Homme" required>
+                                                <label class="form-check-label" for="sexe_masculin">
+                                                    Masculin
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sexe"
+                                                    id="sexe_feminin" value="Femme" required>
+                                                <label class="form-check-label" for="sexe_feminin">
+                                                    Féminin
+                                                </label>
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">
@@ -172,19 +190,24 @@
 
                     <div class="card-body p-0">
                         <div class="p-3">
-                            <div class="row mb-2 align-items-center">
+                            <div class="row"
+                                style="background-color: #f8f9fa; padding: 8px; border-radius: 5px; border: 1px solid #dee2e6;">
                                 <div class="col-md-3">
-                                    <small class="text-muted fw-bold">Filtrer par période</small>
+
                                 </div>
-                                <div class="col-md-9">
-                                    <div class="d-flex" style="background-color: #f8f9fa; padding: 8px; border-radius: 5px; border: 1px solid #dee2e6;">
-                                        <input type="date" class="form-control form-control-sm filter-date-start" id="dateDebut-mas"
-                                            data-table="mas-table" placeholder="Date début">
-                                        <input type="date" class="form-control form-control-sm filter-date-end ms-2" id="dateFin-mas"
-                                            data-table="mas-table" placeholder="Date fin">
-                                        <button type="button" class="btn btn-primary btn-sm ms-2 btn-filter" style="white-space: nowrap;"
-                                            data-table="mas-table">
-                                            <i class="bi bi-search"></i> Rechercher
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control form-control-sm filter-date-start"
+                                        id="dateDebut-mas" data-table="mas-table" placeholder="Date début">
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="date" class="form-control form-control-sm filter-date-end ms-2"
+                                        id="dateFin-mas" data-table="mas-table" placeholder="Date fin">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="ms-2">
+                                        <button type="button" class="btn btn-primary btn-sm ms-2 btn-filter"
+                                            style="white-space: nowrap;" data-table="mas-table">
+                                            <i class="bi bi-search"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -195,10 +218,13 @@
                                 <li>
                                     <div class="list-group-item d-flex justify-content-between align-items-center">
                                         <div>
-                                            <strong>Rapport du {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
-                                            <small class="text-muted">Créé le {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
+                                            <strong>Rapport du
+                                                {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                            <small class="text-muted">Créé le
+                                                {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                         </div>
-                                        <a href="{{ route('gestions_rapports_ma.download', $item->id) }}" class="text-decoration-none">
+                                        <a href="{{ route('gestions_rapports_ma.download', $item->id) }}"
+                                            class="text-decoration-none">
                                             <span class="badge bg-primary rounded-pill">
                                                 <i class="bi bi-download"></i>&nbsp; Télécharger
                                             </span>
@@ -220,51 +246,64 @@
         </div>
     </div>
 
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const button = document.querySelector('.btn-filter[data-table="mas-table"]');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const button = document.querySelector('.btn-filter[data-table="mas-table"]');
 
-    if (button) {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
+                if (button) {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
 
-            const dateDebut = document.getElementById('dateDebut-mas');
-            const dateFin = document.getElementById('dateFin-mas');
-            const listRapports = document.getElementById('rapports-ma-list');
+                        const dateDebut = document.getElementById('dateDebut-mas');
+                        const dateFin = document.getElementById('dateFin-mas');
+                        const listRapports = document.getElementById('rapports-ma-list');
 
-            if (!dateDebut || !dateFin) {
-                alert('Erreur: Champs de date non trouvés!');
-                return;
-            }
+                        if (!dateDebut || !dateFin) {
+                            alert('Erreur: Champs de date non trouvés!');
+                            return;
+                        }
 
-            listRapports.innerHTML = '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
+                        listRapports.innerHTML =
+                            '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
 
-            fetch('{{ route("search-rapports-ma") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                    date_debut: dateDebut.value,
-                    date_fin: dateFin.value,
-                    user_id: {{ Auth::id() }}
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success || data.data.length === 0) {
-                    listRapports.innerHTML = '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
-                    return;
-                }
+                        fetch('{{ route('search-rapports-ma') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                        .getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    date_debut: dateDebut.value,
+                                    date_fin: dateFin.value,
+                                    user_id: {{ Auth::id() }}
+                                })
+                            })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.success || data.data.length === 0) {
+                                    listRapports.innerHTML =
+                                        '<li class="list-group-item text-center">Aucun rapport trouvé pour cette période</li>';
+                                    return;
+                                }
 
-                let html = '';
-                data.data.forEach(item => {
-                    const dateRapport = new Date(item.date_rapport).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
-                    const createdAt = new Date(item.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+                                let html = '';
+                                data.data.forEach(item => {
+                                    const dateRapport = new Date(item.date_rapport)
+                                        .toLocaleDateString('fr-FR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+                                    const createdAt = new Date(item.created_at).toLocaleDateString(
+                                        'fr-FR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
 
-                    html += `
+                                    html += `
                         <li>
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
@@ -278,17 +317,19 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </a>
                             </div>
                         </li>`;
-                });
+                                });
 
-                listRapports.innerHTML = html;
-            })
-            .catch(err => {
-                console.error('Erreur:', err);
-                listRapports.innerHTML = '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' + err.message + '</li>';
+                                listRapports.innerHTML = html;
+                            })
+                            .catch(err => {
+                                console.error('Erreur:', err);
+                                listRapports.innerHTML =
+                                    '<li class="list-group-item text-danger text-center">Erreur lors de la recherche: ' +
+                                    err.message + '</li>';
+                            });
+                    });
+                }
             });
-        });
-    }
-});
-</script>
-@endpush
+        </script>
+    @endpush
 @endsection

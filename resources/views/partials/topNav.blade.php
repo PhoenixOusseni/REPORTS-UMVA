@@ -37,7 +37,7 @@
                             <div class="avatar me-2" style="width: 35px; height: 35px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white;">
                                 {{ substr(Auth::user()->nom, 0, 1) }}{{ substr(Auth::user()->prenom, 0, 1) }}
                             </div>
-                            <span>{{ Auth::user()->prenom }} {{ Auth::user()->nom }}</span>
+                            <span>{{ Auth::user()->umva_id }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 10px; box-shadow: 0 5px 25px rgba(0,0,0,0.15); border: none;">
                             <li>

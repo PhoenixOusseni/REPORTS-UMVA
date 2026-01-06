@@ -4,7 +4,7 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2>BIENVENUE {{ Auth::user()->nom }} {{ Auth::user()->prenom }}</h2>
+                <h2>BIENVENUE {{ Auth::user()->umva_id }}</h2>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
@@ -144,15 +144,33 @@
                                             <input class="form-control" type="text" id="umva_id" name="umva_id"
                                                 required>
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="nom" class="small">Nom</label>
                                             <input class="form-control" type="text" id="nom" name="nom"
                                                 required>
                                         </div>
+
                                         <div class="mb-3">
                                             <label for="prenom" class="small">Prénom</label>
                                             <input class="form-control" type="text" id="prenom" name="prenom"
                                                 required>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="small d-block">Sexe</label>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sexe" id="sexe_masculin" value="Homme" required>
+                                                <label class="form-check-label" for="sexe_masculin">
+                                                    Masculin
+                                                </label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="sexe" id="sexe_feminin" value="Femme" required>
+                                                <label class="form-check-label" for="sexe_feminin">
+                                                    Féminin
+                                                </label>
+                                            </div>
                                         </div>
 
                                         <div class="mb-3">

@@ -11,75 +11,45 @@ use Carbon\Carbon;
 class RapportMasController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // Créer le rapport
-        $rapport_ma = new RapportMa();
-        $rapport_ma->user_id = Auth::id();
-        $rapport_ma->date_rapport = $request['date_rapport'];
-
         // Stocker le fichier
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('reports/rapportma', $filename, 'public');
+            $originalFilename = $file->getClientOriginalName();
+
+            // Vérifier si le nom du fichier commence par "SA_ma"
+            if (!str_starts_with($originalFilename, 'SA_ma')) {
+                return redirect()->back()
+                    ->with('error', 'Seuls les rapports MA sont autorisés. Veuillez selectionner un fichier valide.');
+            }
+
+            $path = 'reports/rapportma/' . $originalFilename;
+
+            // Vérifier si le fichier existe déjà
+            if (Storage::disk('public')->exists($path)) {
+                return redirect()->back()
+                    ->with('error', 'Le fichier "' . $originalFilename . '" existe déjà. Veuillez selectionner un autre');
+            }
+
+            // Stocker le fichier avec son nom d'origine
+            $file->storeAs('reports/rapportma', $originalFilename, 'public');
+
+            // Créer le rapport
+            $rapport_ma = new RapportMa();
+            $rapport_ma->user_id = Auth::id();
+            $rapport_ma->date_rapport = $request->input('date_rapport');
             $rapport_ma->file = $path;
+            $rapport_ma->save();
+
+            return redirect()->back()
+                ->with('success', 'Rapport du ' . Carbon::parse($rapport_ma->date_rapport)->format('d F Y') . ' créé avec succès.');
         }
 
-        $rapport_ma->save();
-
         return redirect()->back()
-            ->with('success', 'Rapport du ' . Carbon::parse($rapport_ma->date_rapport)->format('d F Y') . ' créé avec succès.');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            ->with('error', 'Aucun fichier n\'a été téléchargé.');
     }
 
     /**
