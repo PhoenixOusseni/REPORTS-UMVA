@@ -100,10 +100,10 @@ class PageController extends Controller
     {
         $user = User::findOrFail($id);
         // Pour un admin, on récupère tous les rapports de tous les groupes
-        $rapports = RapportGroupe::orderBy('date_rapport', 'desc')->take(10)->get();
-        $rapportsKa = RapportKa::orderBy('created_at', 'desc')->take(10)->get();
-        $rapportsMa = RapportMa::orderBy('created_at', 'desc')->take(10)->get();
-        $rapportsFp = RapportFp::orderBy('created_at', 'desc')->take(10)->get();
+        $rapports = RapportGroupe::orderBy('date_rapport', 'desc')->paginate(10);
+        $rapportsKa = RapportKa::orderBy('created_at', 'desc')->paginate(10);
+        $rapportsMa = RapportMa::orderBy('created_at', 'desc')->paginate(10);
+        $rapportsFp = RapportFp::orderBy('created_at', 'desc')->paginate(10);
         return view('pages.profils.admin_profil', compact('user', 'rapports', 'rapportsKa', 'rapportsMa', 'rapportsFp'));
     }
 

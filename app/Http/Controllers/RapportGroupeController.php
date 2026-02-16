@@ -80,4 +80,41 @@ class RapportGroupeController extends Controller
             ['Content-Type' => 'text/plain']
         );
     }
+
+    /**
+     * Display the specified resource.
+     */
+    public function destroy(string $id)
+    {
+        $rapport = RapportGroupe::findOrFail($id);
+
+        // Supprimer le fichier associé
+        if (Storage::disk('public')->exists($rapport->file)) {
+            Storage::disk('public')->delete($rapport->file);
+        }
+
+        $rapport->delete();
+
+        return redirect()->back()->with('success', 'Rapport supprimé avec succès.');
+    }
+
+     // Recherche des rapports de groupe par plage de dates
+     public function searchRapportsGroupes(Request $request)
+     {
+         $dateDebut = $request->input('date_debut');
+         $dateFin = $request->input('date_fin');
+          $query = RapportGroupe::where('user_id', Auth::id());
+
+         $query = RapportGroupe::with('groupe');
+
+         if ($dateDebut) {
+             $query->whereDate('date_rapport', '>=', $dateDebut);
+         }
+         if ($dateFin) {
+             $query->whereDate('date_rapport', '<=', $dateFin);
+         }
+
+         $rapports = $query->orderBy('date_rapport', 'desc')->get();
+         return response()->json(['success' => true, 'data' => $rapports]);
+     }
 }

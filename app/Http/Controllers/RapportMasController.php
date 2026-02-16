@@ -81,4 +81,26 @@ class RapportMasController extends Controller
             ['Content-Type' => 'text/plain']
         );
     }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {        $rapport = RapportMa::findOrFail($id);
+        // Vérifier que l'utilisateur peut supprimer ce fichier
+        // if (Auth::id() != $rapport->user_id) {
+        //     abort(403, 'Non autorisé');
+        // }
+
+        // Supprimer le fichier
+        if (Storage::disk('public')->exists($rapport->file)) {
+            Storage::disk('public')->delete($rapport->file);
+        }
+
+        // Supprimer le rapport de la base de données
+        $rapport->delete();
+
+        return redirect()->back()
+            ->with('success', 'Rapport supprimé avec succès.');
+    }
 }

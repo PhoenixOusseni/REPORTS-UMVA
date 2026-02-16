@@ -23,15 +23,15 @@ class RapportKasController extends Controller
 
             // Vérifier si le nom du fichier commence par "KA_ka"
             if (!str_starts_with($originalFilename, 'KA_ka')) {
-                return redirect()->back()
-                    ->with('error', 'Seuls les rapports KA sont autorisés. Veuillez selectionner un fichier valide.');
+                return redirect()->back()->with('error', 'Seuls les rapports KA sont autorisés. Veuillez selectionner un fichier valide.');
             }
 
             $path = 'reports/rapportka/' . $originalFilename;
 
             // Vérifier si le fichier existe déjà
             if (Storage::disk('public')->exists($path)) {
-                return redirect()->back()
+                return redirect()
+                    ->back()
                     ->with('error', 'Le fichier "' . $originalFilename . '" existe déjà. Veuillez selectionner un autre');
             }
 
@@ -45,12 +45,12 @@ class RapportKasController extends Controller
             $rapport_ka->file = $path;
             $rapport_ka->save();
 
-            return redirect()->back()
+            return redirect()
+                ->back()
                 ->with('success', 'Rapport du ' . Carbon::parse($rapport_ka->date_rapport)->format('d F Y') . ' créé avec succès.');
         }
 
-        return redirect()->back()
-            ->with('error', 'Aucun fichier n\'a été téléchargé.');
+        return redirect()->back()->with('error', 'Aucun fichier n\'a été téléchargé.');
     }
 
     /**
@@ -76,10 +76,29 @@ class RapportKasController extends Controller
         $downloadFilename = $filenameWithoutExt . '.txt';
 
         // Télécharger le fichier avec l'extension .txt et le type MIME text/plain
-        return Storage::disk('public')->download(
-            $rapport->file,
-            $downloadFilename,
-            ['Content-Type' => 'text/plain']
-        );
+        return Storage::disk('public')->download($rapport->file, $downloadFilename, ['Content-Type' => 'text/plain']);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $rapport = RapportKa::findOrFail($id);
+
+        // Vérifier que l'utilisateur peut supprimer ce fichier
+        // if (Auth::id() != $rapport->user_id) {
+        //     abort(403, 'Non autorisé');
+        // }
+
+        // Supprimer le fichier
+        if (Storage::disk('public')->exists($rapport->file)) {
+            Storage::disk('public')->delete($rapport->file);
+        }
+
+        // Supprimer le rapport de la base de données
+        $rapport->delete();
+
+        return redirect()->back()->with('success', 'Rapport supprimé avec succès.');
     }
 }
