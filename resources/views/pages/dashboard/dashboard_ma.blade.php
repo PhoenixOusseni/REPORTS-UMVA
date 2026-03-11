@@ -215,21 +215,19 @@
                         </div>
                         <ul class="list-group list-group-flush" id="rapports-ma-list">
                             @forelse ($rapportsMa as $item)
-                                <li>
-                                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>Rapport du
-                                                {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
-                                            <small class="text-muted">Créé le
-                                                {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
-                                        </div>
-                                        <a href="{{ route('gestions_rapports_ma.download', $item->id) }}"
-                                            class="text-decoration-none">
-                                            <span class="badge bg-primary rounded-pill">
-                                                <i class="bi bi-download"></i>&nbsp; Télécharger
-                                            </span>
-                                        </a>
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Rapport du
+                                            {{ \Carbon\Carbon::parse($item->date_rapport)->format('d F Y') }}</strong><br>
+                                        <small class="text-muted">Créé le
+                                            {{ \Carbon\Carbon::parse($item->created_at)->format('d F Y') }}</small>
                                     </div>
+                                    <a href="{{ route('gestions_rapports_ma.download', $item->id) }}"
+                                        class="text-decoration-none">
+                                        <span class="badge bg-primary rounded-pill">
+                                            <i class="bi bi-download"></i>&nbsp; Télécharger
+                                        </span>
+                                    </a>
                                 </li>
                             @empty
                                 <li class="list-group-item">Aucun rapport disponible.</li>
@@ -304,18 +302,16 @@
                                         });
 
                                     html += `
-                        <li>
-                            <div class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>Rapport du ${dateRapport}</strong><br>
-                                    <small class="text-muted">Créé le ${createdAt}</small>
-                                </div>
-                                <a href="/rapports/gestions_rapports_ma/${item.id}/download" class="text-decoration-none">
-                                    <span class="badge bg-primary rounded-pill">
-                                        <i class="bi bi-download"></i>&nbsp; Télécharger
-                                    </span>
-                                </a>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>Rapport du ${dateRapport}</strong><br>
+                                <small class="text-muted">Créé le ${createdAt}</small>
                             </div>
+                            <a href="/rapports/gestions_rapports_ma/${item.id}/download" class="text-decoration-none">
+                                <span class="badge bg-primary rounded-pill">
+                                    <i class="bi bi-download"></i>&nbsp; Télécharger
+                                </span>
+                            </a>
                         </li>`;
                                 });
 

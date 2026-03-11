@@ -4,7 +4,12 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2>BIENVENUE {{ Auth::user()->umva_id }}</h2>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <h2 class="mb-0">BIENVENUE {{ Auth::user()->umva_id }}</h2><hr>
+                    <a href="{{ route('gestions_utilisateurs.index') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-people-fill"></i>&nbsp; Voir tous les utilisateurs
+                    </a>
+                </div>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>

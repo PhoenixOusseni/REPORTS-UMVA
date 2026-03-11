@@ -10,6 +10,28 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     /**
+     * Display users with their overall reports count.
+     */
+    public function index()
+    {
+        if (Auth::user()->role_id !== 1) {
+            abort(403, 'Acces non autorise.');
+        }
+
+        $users = User::with(['role:id,libelle', 'supervisor:id,nom,prenom,umva_id'])
+            ->withCount([
+                'rapportsGroupe as rapports_groupe_count',
+                'rapportsKa as rapports_ka_count',
+                'rapportsMa as rapports_ma_count',
+                'rapportsFp as rapports_fp_count',
+            ])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('pages.users.index', compact('users'));
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -84,5 +106,25 @@ class UserController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Mot de passe mis à jour avec succès');
+    }
+
+    /**
+     * Remove the specified user from storage.
+     */
+    public function destroy(string $id)
+    {
+        if (Auth::user()->role_id !== 1) {
+            abort(403, 'Acces non autorise.');
+        }
+
+        $user = User::findOrFail($id);
+
+        if ($user->id === Auth::id()) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
+        $user->delete();
+
+        return redirect()->back()->with('success', 'Utilisateur supprime avec succes.');
     }
 }
