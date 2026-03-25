@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             listRapports.innerHTML = '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
 
-            fetch('{{ route("search-rapports-ka") }}', {
+            fetch('{{ route("search-own-rapports-ka") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -262,7 +262,7 @@
                         '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
                     if (paginationContainer) paginationContainer.style.display = 'none';
 
-                    fetch('{{ route('search-rapports-fp') }}', {
+                    fetch('{{ route('search-own-rapports-fp') }}', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

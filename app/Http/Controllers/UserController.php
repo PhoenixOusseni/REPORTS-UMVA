@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -52,7 +53,11 @@ class UserController extends Controller
     public function showKa(string $id)
     {
         $findUser = User::findOrFail($id);
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+
         $rapports = $findUser->rapportsKa()
+            ->whereBetween('date_rapport', [$startOfWeek, $endOfWeek])
             ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.kas.details_kas', compact('findUser', 'rapports'));
@@ -61,7 +66,11 @@ class UserController extends Controller
     public function showMa(string $id)
     {
         $findUser = User::findOrFail($id);
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+
         $rapports = $findUser->rapportsMa()
+            ->whereBetween('date_rapport', [$startOfWeek, $endOfWeek])
             ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.mas.details_mas', compact('findUser', 'rapports'));
@@ -73,7 +82,11 @@ class UserController extends Controller
     public function showFp(string $id)
     {
         $findUser = User::findOrFail($id);
+        $startOfWeek = Carbon::now()->startOfWeek(Carbon::MONDAY)->toDateString();
+        $endOfWeek = Carbon::now()->endOfWeek(Carbon::SUNDAY)->toDateString();
+
         $rapports = $findUser->rapportsFp()
+            ->whereBetween('date_rapport', [$startOfWeek, $endOfWeek])
             ->orderBy('date_rapport', 'desc')->paginate(10);
 
         return view('pages.fps.details_fps', compact('findUser', 'rapports'));

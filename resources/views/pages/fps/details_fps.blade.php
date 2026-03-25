@@ -102,7 +102,7 @@
                         listGroup.innerHTML =
                             '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
 
-                        fetch('{{ route('search-rapports-fp') }}', {
+                        fetch('{{ route('search-rapports-id-fp', $findUser->id) }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

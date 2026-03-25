@@ -265,7 +265,7 @@
                         listRapports.innerHTML =
                             '<li class="list-group-item text-center"><div class="spinner-border"></div> Chargement...</li>';
 
-                        fetch('{{ route('search-rapports-ma') }}', {
+                        fetch('{{ route('search-own-rapports-ma') }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

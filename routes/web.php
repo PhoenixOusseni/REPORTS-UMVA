@@ -7,7 +7,6 @@ use App\Http\Controllers\GroupeController;
 use App\Http\Controllers\RapportGroupeController;
 use App\Http\Controllers\RapportKasController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RapportMaController;
 
 Route::get('/', [PageController::class, 'auth'])->name('login');
 Route::post('connexion', [AuthController::class, 'login_admin'])->name('login_admin');
@@ -71,6 +70,12 @@ Route::middleware('auth')->group(function () {
     Route::post('profile/search-rapports-ka', [PageController::class, 'searchRapportsKa'])->name('search-rapports-ka');
     Route::post('profile/search-rapports-ma', [PageController::class, 'searchRapportsMa'])->name('search-rapports-ma');
     Route::post('profile/search-rapports-fp', [PageController::class, 'searchRapportsFp'])->name('search-rapports-fp');
+    Route::post('profile/{id}/search-rapports-ka', [PageController::class, 'searchRapportsKaById'])->name('search-rapports-id-ka');
+    Route::post('profile/{id}/search-rapports-ma', [PageController::class, 'searchRapportsMaById'])->name('search-rapports-id-ma');
+    Route::post('profile/{id}/search-rapports-fp', [PageController::class, 'searchRapportsFpById'])->name('search-rapports-id-fp');
+    Route::post('profile/search-rapports-ka', [PageController::class, 'searchOwnRapportsKa'])->name('search-own-rapports-ka');
+    Route::post('profile/search-rapports-ma', [PageController::class, 'searchOwnRapportsMa'])->name('search-own-rapports-ma');
+    Route::post('profile/search-rapports-fp', [PageController::class, 'searchOwnRapportsFp'])->name('search-own-rapports-fp');
 
     Route::post(
     'fp/search-rapports',
@@ -84,5 +89,13 @@ Route::post(
     'ma/search-rapports',
     [PageController::class, 'searchRapportsMa']
 )->name('ma.search-rapports');
+Route::get(
+    'ma/ka/{id}/rapports',
+    [PageController::class, 'getRapportsKaById']
+)->name('ma.ka.rapports');
+Route::post(
+    'ma/search-mes-rapports',
+    [PageController::class, 'searchMesRapportsMa']
+)->name('ma.search-mes-rapports');
 
 });
