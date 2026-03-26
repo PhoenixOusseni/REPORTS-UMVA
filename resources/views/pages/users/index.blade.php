@@ -18,8 +18,18 @@
         </div>
 
         <div class="card shadow-sm">
-            <div class="card-header bg-light fw-bold">
-                Liste des utilisateurs et total des rapports uploadés
+            <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+                <div>Liste des utilisateurs et total des rapports uploadés</div>
+                <form action="{{ route('gestions_utilisateurs.search') }}" method="GET" class="d-flex gap-2">
+                    <input type="text" name="umva_id" class="form-control form-control-sm" 
+                           placeholder="UMVA ID" value="{{ request('umva_id') }}" style="width: 130px;">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a href="{{ route('gestions_utilisateurs.index') }}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                </form>
             </div>
             <div class="card-body">
                 <div class="table-responsive">

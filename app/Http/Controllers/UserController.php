@@ -140,4 +140,36 @@ class UserController extends Controller
 
         return redirect()->back()->with('success', 'Utilisateur supprime avec succes.');
     }
+
+    /**
+     * Search users by UMVA ID and/or prénom.
+     */
+    public function search(Request $request)
+    {
+        if (Auth::user()->role_id !== 1) {
+            abort(403, 'Acces non autorise.');
+        }
+
+        $query = User::with(['role:id,libelle', 'supervisor:id,nom,prenom,umva_id'])
+            ->withCount([
+                'rapportsGroupe as rapports_groupe_count',
+                'rapportsKa as rapports_ka_count',
+                'rapportsMa as rapports_ma_count',
+                'rapportsFp as rapports_fp_count',
+            ]);
+
+        // Filtre par UMVA ID
+        if ($request->filled('umva_id')) {
+            $query->where('umva_id', 'like', '%' . $request->umva_id . '%');
+        }
+
+        // Filtre par Prénom
+        if ($request->filled('prenom')) {
+            $query->where('prenom', 'like', '%' . $request->prenom . '%');
+        }
+
+        $users = $query->orderBy('created_at', 'desc')->paginate(20);
+
+        return view('pages.users.index', compact('users'));
+    }
 }

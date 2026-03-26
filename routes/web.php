@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('users/gestions_utilisateurs/{id}/fp-rapports', [UserController::class, 'showFp'])->name('gestions_utilisateurs.show_fp');
 
     // Gestion des utilisateurs
+    Route::get('users/gestions_utilisateurs/search', [UserController::class, 'search'])->name('gestions_utilisateurs.search');
     Route::resource('users/gestions_utilisateurs', UserController::class);
 
     // profils utilisateurs kas, mas, fp
@@ -73,9 +74,9 @@ Route::middleware('auth')->group(function () {
     Route::post('profile/{id}/search-rapports-ka', [PageController::class, 'searchRapportsKaById'])->name('search-rapports-id-ka');
     Route::post('profile/{id}/search-rapports-ma', [PageController::class, 'searchRapportsMaById'])->name('search-rapports-id-ma');
     Route::post('profile/{id}/search-rapports-fp', [PageController::class, 'searchRapportsFpById'])->name('search-rapports-id-fp');
-    Route::post('profile/search-rapports-ka', [PageController::class, 'searchOwnRapportsKa'])->name('search-own-rapports-ka');
-    Route::post('profile/search-rapports-ma', [PageController::class, 'searchOwnRapportsMa'])->name('search-own-rapports-ma');
-    Route::post('profile/search-rapports-fp', [PageController::class, 'searchOwnRapportsFp'])->name('search-own-rapports-fp');
+    Route::post('profile/search-own-rapports-ka', [PageController::class, 'searchOwnRapportsKa'])->name('search-own-rapports-ka');
+    Route::post('profile/search-own-rapports-ma', [PageController::class, 'searchOwnRapportsMa'])->name('search-own-rapports-ma');
+    Route::post('profile/search-own-rapports-fp', [PageController::class, 'searchOwnRapportsFp'])->name('search-own-rapports-fp');
 
     Route::post(
     'fp/search-rapports',
